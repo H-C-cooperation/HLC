@@ -3,19 +3,19 @@
     <div class="bg-body-secondary bg-opacity-75 text-white p-5 text-center border border-dark border-2">
       <h1>HLC</h1>
       <br>
-      <form action="#">
+      <form @submit.prevent="logIn">
         <p>아이디가 있으신가요?</p>
         <div class="m-3">
           <p>
-            <input class="mx-2" id="ID" type="text" placeholder="ID">
+            <input class="mx-2" id="ID" type="text" placeholder="ID" v-model.trim="userId">
           </p>
           <p>
-            <input class="mx-2" id="PW" type="text" placeholder="PW">
+            <input class="mx-2" id="PW" type="text" placeholder="PW" v-model.trim="password">
           </p>
         </div>
         <div class="text-center">
           <input class="me-5 btn btn-dark" type="submit" value="로그인">
-          <a href="#">가입하기</a>
+          <button class="btn" @click="goSignUp">가입하기</button>
         </div>
       </form>
     </div>
@@ -23,7 +23,27 @@
 </template>
 
 <script setup>
+import { useRouter } from 'vue-router';
+import { ref } from 'vue'
+import { useMovieStore } from '@/stores/movie';
 
+const router = useRouter()
+const store = useMovieStore()
+
+const goSignUp = function () {
+  router.push({ name: 'signup' })
+}
+
+const userId = ref(null)
+const password = ref(null)
+
+const logIn = function () {
+  const payload = {
+    userId: userId.value,
+    password: password.value
+  }
+  store.logIn(payload)
+}
 </script>
 
 <style scoped>

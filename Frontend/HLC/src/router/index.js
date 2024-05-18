@@ -1,14 +1,15 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { useMovieStore } from '@/stores/movie'
 // movie
 import HomeView from '@/views/HomeView.vue'
 import MovieView from '@/views/MovieView.vue'
-import MovieDetailView from '@/views/MovieDetailView.vue'
+import MovieDetailView from '@/components/movie/MovieDetail.vue'
 import FavoriteMovieView from '@/views/FavoriteMovieView.vue'
 // review
-import ReviewView from '@/views/ReviewView.vue'
+import ReviewView from '@/components/review/Review.vue'
 import ReviewCreate from '@/components/review/ReviewCreate.vue'
 // recommend
-import Recommendation from '@/components/movie/MovieRecommendation.vue'
+import Recommendation from '@/views/RecommendationView.vue'
 // account
 import ProfileView from '@/views/ProfileView.vue'
 import SignUpView from '@/views/SignUpView.vue'
@@ -68,6 +69,14 @@ const router = createRouter({
       component: LoginView
     },
   ]
+})
+
+router.beforeEach((to, from) => {
+  const store = useMovieStore()
+  if (to.name !== 'LoginView' && store.isLogin === false) {
+    window.alert('로그인이 필요합니다.')
+    return { name: 'login' }
+  }
 })
 
 export default router

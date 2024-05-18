@@ -3,7 +3,7 @@
   3. 배경색 덜적용됨  -->
 
   <template>
-    <div class="container">
+    <div class="container bg-black">
       <div class="outline">
         <header>
           <h1>프로필 수정</h1>
@@ -14,8 +14,8 @@
             <img src="./assets/profile.png" alt="내프로필이미지" class="m-3" />
             <div class="inputbox">
               <div>
-                <p><input type="text" value="유저 이름" class="inputbox" /></p>
-                <p><input type="text" value="유저 이메일" class="inputbox" /></p>
+                <p><input type="text" placeholder="유저 이름" class="inputbox" /></p>
+                <p><input type="text" placeholder="유저 이메일" class="inputbox" /></p>
               </div>
             </div>
           </div>
@@ -61,6 +61,7 @@
     justify-content: center;
   
     color: white;
+    height: 100vh;
   }
   
   .outline {

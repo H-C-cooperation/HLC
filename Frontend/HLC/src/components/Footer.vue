@@ -11,12 +11,19 @@
           <div md="2" lg="2" xl="2" class="mx-auto mb-4">
             <h6 class="text-uppercase fw-bold mb-4">SITE MAP</h6>
             <p>
-              <a href="http://localhost:8080/" class="text-reset">HOME</a>
+              <RouterLink
+                class="text-reset"
+                :to="{ name: 'home' }"
+              >Home</RouterLink>
             </p>
             <p>
               <a href="http://localhost:8080/recommendation" class="text-reset"
                 >Recommendations</a
               >
+              <RouterLink
+                class="text-reset"
+                :to="{ name: 'recommend' }"
+              >Recommendations</RouterLink>
             </p>
             <p>
               <a href="http://localhost:8080/communities" class="text-reset"
@@ -52,6 +59,7 @@
 </template>
 
 <script>
+import { RouterLink } from 'vue-router';
 export default {
   name: "FooterBar",
 };
