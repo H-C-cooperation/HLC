@@ -43,7 +43,7 @@ def takeGenre():
         print(f"{len(genreDatas)} genres fetched successfully.")
 
 def takeMovie():
-    for i in range(1, 2):
+    for i in range(1, 5):
         # TMDB API를 사용하여 영화 데이터 (인기) 가져오기
         movieURL = f"https://api.themoviedb.org/3/movie/popular?api_key={TMDB_API_KEY}&language=ko-KR&page={i}"
         movieList = requests.get(movieURL)
@@ -52,7 +52,7 @@ def takeMovie():
         for resData in resDatas:
             tmp_id = resData.get('id')
             # CREDITS (배우 + 감독(시간 남으면)) 가져오기
-            CREDITS_URL = f"https://api.themoviedb.org/3/movie/{tmp_id}/credits?api_key={TMDB_API_KEY}"
+            CREDITS_URL = f"https://api.themoviedb.org/3/movie/{tmp_id}/credits?api_key={TMDB_API_KEY}&language=ko-KR"
             creditsData = requests.get(CREDITS_URL)
 
             if resData.get('release_date') == None:

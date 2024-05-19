@@ -7,6 +7,7 @@ class Movie(models.Model):
     # 영화배우와 장르는 N:M 연결
     actors = models.ManyToManyField("Actor", related_name='movies')
     genres = models.ManyToManyField("Genre", related_name='movies')
+    like_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='like_movies', blank=True)
 
     adult = models.BooleanField(default=False)
     backdrop_path = models.CharField(max_length=100)
@@ -33,13 +34,16 @@ class Actor(models.Model):
         return self.name
 
 class Genre(models.Model):
+    like_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='like_genres', blank=True)
+    
     id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=30)
-    gen_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name="like_gens", blank=True)
     def __str__ (self):
         return self.name
     
 class Review(models.Model):
+    like_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='like_reviews', blank=True)
+    
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE)  
 
