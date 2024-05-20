@@ -7,6 +7,7 @@ export const useMovieStore = defineStore('movie', () => {
   const movies = ref([])
   const API_URL = 'http://127.0.0.1:8000'
   const router = useRouter()
+  const token = ref(null)
 
   const getMovies = function () {
     axios({
@@ -26,37 +27,36 @@ export const useMovieStore = defineStore('movie', () => {
 
 
   const signUp = function (payload) {
-    const { userId, password1, password2 } = payload
+    const { username, password1, password2 } = payload
 
     axios({
       method: 'post',
       url: `${API_URL}/accounts/registration/`,
       data: {
-        userId, password1, password2
+        username, password1, password2
       }
     })
       .then(res => {
         const password = password1
-        logIn({ userId, password })
+        logIn({ username, password })
       })
       .catch(err => console.log(err))
   }
 
-  const token = ref(nul)
 
   const logIn = function (payload) {
-    const { userId, password } = payload
+    const { username, password } = payload
 
     axios({
       method: 'post',
       url: `${API_URL}/accounts/login/`,
       data: {
-        userId, password
+        username, password
       }
     })
       .then(res => {
         token.value = res.data.key
-        router.push({ name: 'movie' })
+        router.push({ name: 'home' })
       })
       .catch(err => console.log(err))
   }

@@ -20,6 +20,11 @@ const router = createRouter({
   routes: [
     {
       path: '/',
+      name: 'login',
+      component: LoginView
+    },
+    {
+      path: '/home',
       name: 'home',
       component: HomeView
     },
@@ -63,17 +68,12 @@ const router = createRouter({
       name: 'signup',
       component: SignUpView
     },
-    {
-      path: '/login',
-      name: 'login',
-      component: LoginView
-    },
   ]
 })
 
 router.beforeEach((to, from) => {
   const store = useMovieStore()
-  if (to.name !== 'LoginView' && store.isLogin === false) {
+  if (to.name !== 'login' && to.name !== 'signup' && store.isLogin === false) {
     window.alert('로그인이 필요합니다.')
     return { name: 'login' }
   }

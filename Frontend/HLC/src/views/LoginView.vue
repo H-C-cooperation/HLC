@@ -7,7 +7,7 @@
         <p>아이디가 있으신가요?</p>
         <div class="m-3">
           <p>
-            <input class="mx-2" id="ID" type="text" placeholder="ID" v-model.trim="userId">
+            <input class="mx-2" id="ID" type="text" placeholder="ID" v-model.trim="username">
           </p>
           <p>
             <input class="mx-2" id="PW" type="text" placeholder="PW" v-model.trim="password">
@@ -34,12 +34,12 @@ const goSignUp = function () {
   router.push({ name: 'signup' })
 }
 
-const userId = ref(null)
+const username = ref(null)
 const password = ref(null)
 
 const logIn = function () {
   const payload = {
-    userId: userId.value,
+    username: username.value,
     password: password.value
   }
   store.logIn(payload)
