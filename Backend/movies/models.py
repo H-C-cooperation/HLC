@@ -1,8 +1,9 @@
 from django.db import models
 from django.conf import settings
 
-# Create your models here.
-# 테스트 모델
+# 최대, 최소 값을 django의 내장 validator
+from django.core.validators import MaxValueValidator, MinValueValidator
+
 class Movie(models.Model):
     # 영화배우와 장르는 N:M 연결
     actors = models.ManyToManyField("Actor", related_name='movies')
@@ -47,8 +48,8 @@ class Review(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE)  
 
-    title = models.CharField(max_length=100)
-    rate = models.FloatField() # 평점
+    # title = models.CharField(max_length=100)
+    rate = models.FloatField(validators=[MaxValueValidator(5.0), MinValueValidator(0.0)]) # 평점
     content = models.TextField()
 
     created_at = models.DateTimeField(auto_now_add=True)
