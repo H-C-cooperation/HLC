@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken', # Token-based authentication을 위한 도구
 
     # REST_AUTH
+    'corsheaders',
     'dj_rest_auth', # REST API를 위한 인증 라이브러리
     'allauth', # Django 프로젝트를 위한 통합 인증 애플리케이션
     'allauth.account', # allauth의 계정 관리를 위한 도구
@@ -75,6 +76,12 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     # all auth
     'allauth.account.middleware.AccountMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+]
+
+CORS_ALLOWED_ORIGINS = [
+  'http://127.0.0.1:5173',
+  'http://localhost:5173',
 ]
 
 ROOT_URLCONF = 'HNC_server.urls'

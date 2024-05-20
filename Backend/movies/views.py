@@ -55,6 +55,7 @@ def takeMovie():
             CREDITS_URL = f"https://api.themoviedb.org/3/movie/{tmp_id}/credits?api_key={TMDB_API_KEY}&language=ko-KR"
             creditsData = requests.get(CREDITS_URL)
 
+            # overview 
             if resData.get('release_date') == None:
                 continue
 
