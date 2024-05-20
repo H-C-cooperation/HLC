@@ -17,9 +17,9 @@ urlpatterns = [
     path('movies/<int:movie_pk>/like/', views.movie_like, name='movie_like'),
     
     # review CRUD
-    path('reviews/', views.review_list, name='review_list'),
-    path('reviews/<int:review_pk>/', views.review_detail, name='review_detail'),
-    path('movies/<int:movie_pk>/reviews/', views.create_review, name='create_review'),
+    path('movies/<int:movie_pk>/reviews/', views.review_list_or_create, name='review_list_or_create'),
+    path('movies/<int:movie_pk>/reviews/<int:review_pk>/', views.review_detail, name='review_detail'),
+    
 
     # review 좋아요
     path('reviews/<int:review_pk>/like/', views.review_like, name='review_like'),

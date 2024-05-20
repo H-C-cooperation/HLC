@@ -19,9 +19,10 @@ class Movie(models.Model):
     release_date = models.DateField(auto_now=False, auto_now_add=False)
     title = models.CharField(max_length=50)
     vote_average = models.FloatField()
+    vote_count = models.IntegerField(default=0)
 
     # 런타임
-    # runtime = models.IntegerField()
+    runtime = models.IntegerField(default=0)
     
     def __str__(self):
         return self.title
@@ -44,9 +45,9 @@ class Genre(models.Model):
     
 class Review(models.Model):
     like_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='like_reviews', blank=True)
-    
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    movie = models.ForeignKey(Movie, on_delete=models.CASCADE)  
+
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='reviews')
+    movie = models.ForeignKey(Movie, on_delete=models.CASCADE, related_name='reviews')  
 
     # title = models.CharField(max_length=100)
     rate = models.FloatField(validators=[MaxValueValidator(5.0), MinValueValidator(0.0)]) # 평점
