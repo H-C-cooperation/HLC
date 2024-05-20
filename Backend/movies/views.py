@@ -20,6 +20,30 @@ import requests
 import json
 
 TMDB_API_KEY = 'd88c87eab4e60d92631748ce1dc8d7f5'
+YOUTUBE_API_KEY = 'AIzaSyACxJj878xh9pNgnBhs1yW_Ar7vOd0R7F0'
+# AIzaSyA3cQDQWcuogFV6t4oZrFXYR2ZfEOlvkpg
+# AIzaSyACxJj878xh9pNgnBhs1yW_Ar7vOd0R7F0
+def takeYoutubeUrl(movieTitle):
+    url = 'https://www.googleapis.com/youtube/v3/search'
+    params = {
+        'part': 'snippet',
+        'key': YOUTUBE_API_KEY,
+        'q': f"{movieTitle} 공식 예고편",
+        'type': 'video'
+    }
+    response = requests.get(url, params=params)
+    data = response.json()
+
+    try:
+        video_id = data['items'][0]['id']['videoId']
+    except (IndexError , KeyError):
+        print(f"Error: ", movieTitle)
+        video_id = ''
+
+    youtube_url = ''
+    if video_id:
+        youtube_url = f"https://www.youtube.com/embed/{video_id}"
+    return youtube_url
 
 def takeGenre():
     print('Fetching movie genres...')
@@ -48,7 +72,7 @@ def takeGenre():
 
 def takeMovie():
     cnt = 0
-    for i in range(1, 5):
+    for i in range(5, 11):
         # TMDB API를 사용하여 영화 데이터 (인기) 가져오기
         movieURL = f"https://api.themoviedb.org/3/movie/popular?api_key={TMDB_API_KEY}&language=ko-KR&page={i}"
         movieList = requests.get(movieURL)
@@ -64,12 +88,20 @@ def takeMovie():
             creditsData = requests.get(CREDITS_URL)
             # creditsData = detailData.get('credits')
 
-            # overview 
+            # 예외 처리 : 빈 값이 있을 수 있는 필드는 db에 저장하면 not null 에러가 난다 => 이를 제외하기 
             if resData.get('release_date') == None or detailData.json().get('runtime') == None:
                 print(resData.get('release_date'), detailData.json().get('runtime'))
                 cnt += 1
                 continue
+            
+            # youtube 공식 예고편 링크 가져오기 (혹시라도 제목 없으면 에러 메시지 띄우기 위해 index 로 사용)
+            youtube_url = takeYoutubeUrl(resData['title'])
 
+            # 공식 예고편을 찾을 수 없다면 없애 주기
+            if youtube_url == '':
+                cnt += 1
+                continue
+            
             # movie는 객체, flag는 생성 되었는지 여부
             movie = Movie.objects.create(
                 adult = resData.get('adult'),
@@ -83,6 +115,7 @@ def takeMovie():
                 vote_average = resData.get('vote_average'),
                 vote_count = resData.get('vote_count'),
                 runtime = detailData.json().get('runtime'),
+                youtube_url = youtube_url,
             )
         
             # 영화배우 추가 파트
