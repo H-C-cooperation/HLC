@@ -134,6 +134,25 @@ def movie_detail(request, movie_pk):
     
     return Response(serializer.data)
 
+# 영화 찜하기
+@api_view(['POST'])
+def movie_like(request, movie_pk):
+    user = request.user
+    movie = get_object_or_404(Movie, pk=movie_pk)
+
+    if movie.like_users.filter(pk=user.pk).exists():
+        movie.like_users.remove(user)
+        liked = False
+    else:
+        movie.like_users.add(user)
+        liked =True
+    context ={
+        'liked' : liked,
+        'count' : movie.like_users.count(),
+    }
+
+    return Response(context)
+
 # 전체 리뷰 목록 제공
 @api_view(['GET'])
 def review_list(request):
@@ -147,6 +166,11 @@ def review_list(request):
 def review_detail(request, review_pk):
     review = Review.objects.get(pk=review_pk)
     
+    # 다른 유저가 수정, 삭제 못하게 예외 처리
+    if request.user != review.user:
+        print('리뷰 작성자만 수정 및 삭제가 가능합니다.')
+        return Response({'message:''리뷰 작성자만 수정 및 삭제가 가능합니다.'})
+
     # 조회
     if request.method == 'GET':
         serializer = ReviewDetailSerializer(review)
@@ -182,3 +206,22 @@ def create_review(request, movie_pk):
     if serializer.is_valid(raise_exception=True):
         serializer.save(movie=movie, user=request.user)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+# 리뷰 좋아요
+@api_view(['POST'])
+def review_like(request, review_pk):
+    user = request.user
+    review = get_object_or_404(Review, pk=review_pk)
+
+    if review.like_users.filter(pk=user.pk).exists():
+        review.like_users.remove(user)
+        liked = False
+    else:
+        review.like_users.add(user)
+        liked =True
+    context ={
+        'liked' : liked,
+        'count' : review.like_users.count(),
+    }
+
+    return Response(context)

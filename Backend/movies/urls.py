@@ -2,15 +2,26 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
+    # actor 정보 조회 (전체, 단일)
     path('actors/', views.actor_list, name='actor_list'),
     path('actors/<int:actor_pk>/', views.actor_detail, name='actor_detail'),
     
-    # 무비 로드 (관리자만 허용)
+    # movie 로드 (관리자만 허용)
     path('movies/load/', views.movie_load),
 
+    # movie 정보 조회 (전체, 단일)
     path('movies/', views.movie_list, name='movie_list'),
     path('movies/<int:movie_pk>/', views.movie_detail, name='movie_detail'),
+
+    # movie 찜하기
+    path('movies/<int:movie_pk>/like/', views.movie_like, name='movie_like'),
+    
+    # review CRUD
     path('reviews/', views.review_list, name='review_list'),
     path('reviews/<int:review_pk>/', views.review_detail, name='review_detail'),
     path('movies/<int:movie_pk>/reviews/', views.create_review, name='create_review'),
+
+    # review 좋아요
+    path('reviews/<int:review_pk>/like/', views.review_like, name='review_like'),
+    
 ]
