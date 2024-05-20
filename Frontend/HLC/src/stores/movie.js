@@ -36,6 +36,9 @@ export const useMovieStore = defineStore('movie', () => {
       url: `${API_URL}/api/v1/movies/`,
       headers: {
         Authorization: `Token ${token.value}`
+      },
+      params: {
+        mode: 'popularity',
       }
     })
       .then(res => {

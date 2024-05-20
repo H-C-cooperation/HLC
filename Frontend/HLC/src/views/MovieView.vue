@@ -1,17 +1,30 @@
 <template>
-  <Carousel :itemsToShow="3.95" :wrapAround="true" :transition="500">
+  <Carousel 
+    :itemsToShow="items" 
+    :wrapAround="true" 
+    :transition="500"
+    navigationNextLabel=""
+    navigationPrevLabel=""
+  >
     <Slide v-for="movie in movies" :key="movie.id">
       <img class="carousel__item" :src="`https://image.tmdb.org/t/p/w200/${movie.poster_path}`" :alt="movie.title" />
     </Slide>
 
     <template #addons>
-      <Navigation />
+      <navigation>
+        <template #next>
+          <img src="../components/icons/arrow_forward.png" alt="arrow" width="30px" height="30px">
+        </template>
+        <template #prev>
+          <img src="../components/icons/arrow_back.png" alt="arrow" width="30px" height="30px">
+        </template>
+      </navigation>
     </template>
   </Carousel>
 </template>
 
 <script>
-import { defineComponent } from 'vue';
+import { defineComponent, onMounted, ref, onBeforeUnmount } from 'vue';
 import { Carousel, Navigation, Slide } from 'vue3-carousel'
 import { useMovieStore } from '@/stores/movie';
 
@@ -29,14 +42,43 @@ export default defineComponent({
     const store = useMovieStore()
     const movies = store.movies
 
+    const items = ref(0)
+
+    const updateItems = () => {
+      if (window.innerWidth >= 1400) {
+        items.value = 8
+      } else if (window.innerWidth >= 1200) {
+        items.value = 7
+      } else if (window.innerWidth >= 992) {
+        items.value = 6
+      } else if (window.innerWidth >= 768) {
+        items.value = 5
+      } else if (window.innerWidth >= 576) {
+        items.value = 4
+      } else {
+        items.value = 3
+      }
+    }
+
+    onMounted(() => {
+      updateItems()
+      window.addEventListener('resize', updateItems)
+    })
+
+    onBeforeUnmount(() => {
+      window.removeEventListener('resize', updateItems)
+    })
+
     return {
-      movies
+      movies,
+      items
     }
   }
 })
 </script>
 
 <style scoped>
+
 .carousel__slide {
   padding: 5px;
 }
@@ -75,9 +117,5 @@ export default defineComponent({
 .carousel__slide--active {
   opacity: 1;
   transform: rotateY(0) scale(1.1);
-}
-
-.carousel__prev, .carousel__next {
-  color: #fff;
 }
 </style>
