@@ -23,6 +23,9 @@ class Movie(models.Model):
 
     # 런타임
     runtime = models.IntegerField(default=0)
+
+    # youtube 공식 예고편 링크 
+    youtube_url = models.CharField(max_length=150)
     
     def __str__(self):
         return self.title
