@@ -76,6 +76,8 @@ router.beforeEach((to, from) => {
   if (to.name !== 'login' && to.name !== 'signup' && store.isLogin === false) {
     window.alert('로그인이 필요합니다.')
     return { name: 'login' }
+  } else {
+    store.getMovies()
   }
 })
 

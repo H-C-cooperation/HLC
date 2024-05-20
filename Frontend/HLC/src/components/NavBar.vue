@@ -38,7 +38,15 @@
           class="btn"
           :to="{ name: 'profile' }"
         >
-          <img src="./icons/person.png" alt="유저 프로필" width="30" height="30">
+          <div class="dropdown">
+            <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <img src="./icons/person.png" alt="유저 프로필" width="30" height="30">
+            </button>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" @click="goProfile">프로필</a></li>
+              <li><a class="dropdown-item" @click="logOut">로그아웃</a></li>
+            </ul>
+          </div>
         </RouterLink>
       </div>
     </div>
@@ -47,6 +55,32 @@
 
 <script setup>
 import { RouterLink, RouterView } from 'vue-router';
+import { useRouter } from 'vue-router';
+import { useMovieStore } from '@/stores/movie';
+import axios from 'axios';
+
+const router = useRouter()
+const store = useMovieStore()
+
+const goProfile = function () {
+  router.push({ name: 'profile' })
+}
+
+const logOut = function () {
+  
+  axios({
+    method: 'post',
+    url: `${store.API_URL}/accounts/logout/`,
+    headers: {
+      Authorization: `Token ${store.token}`
+    }
+  })
+    .then(res => {
+      router.push({ name: 'login' })
+      store.token = null
+    })
+    .catch(err => console.log(err))
+}
 </script>
 
 <style scoped>

@@ -53,7 +53,7 @@
       </div>
     </section>
     <div class="text-center p-4" style="background-color: #1f1f1f">
-      © 2022 Copyright:
+      © 2024 Copyright:
       <a class="text-reset fw-bold">HLC</a>
     </div>
   </footer>
