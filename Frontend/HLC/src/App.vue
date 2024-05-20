@@ -6,7 +6,7 @@
       <Footer />
     </div>
     <div v-else>
-      <LoginView />
+      <RouterView />
     </div>
   </main>
 </template>
@@ -21,6 +21,7 @@ import { RouterView } from 'vue-router';
 import { useMovieStore } from './stores/movie';
 
 const store = useMovieStore()
+const currentUrl = window.location.pathname
 </script>
 
 <style scoped>
