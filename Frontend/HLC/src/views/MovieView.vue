@@ -4,7 +4,7 @@
       <h1 class="m-3">⭐Top10 영화들⭐</h1>
       <MainCarousel />
     </div>
-    <div>
+    <div class="sub-carousel">
       <h3>화끈한 액션영화 🔥</h3>
       <hr style="border: solid 2px #fff;">
       <SubCarousel1 class="mb-5"/>
@@ -49,5 +49,9 @@ const genres = store.genres
   width: 1000px;
   height: 500px;
   text-align: center
+}
+
+.sub-carousel {
+  overflow: visible;
 }
 </style>

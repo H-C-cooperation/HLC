@@ -93,5 +93,7 @@ export const useMovieStore = defineStore('movie', () => {
     }
   })
 
-  return { movies, API_URL, getMovies, signUp, logIn, token, isLogin, genres }
+  const navFootView = ref(true)
+
+  return { movies, API_URL, getMovies, signUp, logIn, token, isLogin, genres, navFootView }
 }, { persist: true })

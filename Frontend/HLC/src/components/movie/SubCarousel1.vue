@@ -8,15 +8,29 @@
   >
     <Slide v-for="movie in movies" :key="movie.id">
       <div 
-        class="item" 
+        class="card bg-black"
+        :class="['item', { 'active-item': activeMovie === movie.id }]" 
         @mouseover="showInfo(movie.id)"
         @mouseleave="hideInfo(movie.id)"
       >
-        <img class="carousel__item" :src="`https://image.tmdb.org/t/p/w200/${movie.poster_path}`" :alt="movie.title" />
-        <div v-if="activeMovie === movie.id" class="info-popup">
-          <h3>{{ movie.title }}</h3>
-          <p>{{ movie.overview }}</p>
+        <div class="blank"></div>
+        <img class="carousel__item" :src="`https://image.tmdb.org/t/p/w200/${movie.poster_path}`" :alt="movie.title"/>
+        <div class="card-body">
+          <div v-if="activeMovie === movie.id" class="info-popup">
+            <iframe 
+            :src="`${movie.youtube_url}?autoplay=1&mute=1&controls=0&modestbranding=1&rel=0`" 
+            width="100%"
+            height="50%"
+            frameborder="0"
+            class="iframe-content"
+            ></iframe>
+            <h5 class="card-title">영화 설명</h5>
+            <p>(chatGPT로 생성됨)</p>
+            <CarouselHover class="mb-3 p-1 border border-danger-subtle" :movie="movie"/>
+            <a href="#" class="btn bg-danger bg-opacity-75 text-white">자세히 보기</a>
+          </div>
         </div>
+        <div class="blank"></div>
       </div>
     </Slide>
 
@@ -34,11 +48,12 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue'
-import { Carousel, Navigation, Pagination, Slide } from 'vue3-carousel'
+import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { Carousel, Navigation, Slide } from 'vue3-carousel'
 import { useMovieStore } from '@/stores/movie'
 import axios from 'axios'
 import 'vue3-carousel/dist/carousel.css'
+import CarouselHover from '@/components/movie/CarouselHover.vue'
 
 const store = useMovieStore()
 const movies = ref([])
@@ -89,22 +104,10 @@ const hideInfo = () => {
   activeMovie.value = null
 }
 
-
-const initializePopovers = () => {
-  nextTick(() => {
-    movieRefs.value.forEach(ref => {
-      new bootstrap.Popover(ref, {
-        trigger: 'hover'
-      })
-    })
-  })
-}
-
 onMounted(() => {
   getMovies()
   updateItems()
   window.addEventListener('resize', updateItems)
-  initializePopovers()
 })
 
 onBeforeUnmount(() => {
@@ -113,13 +116,12 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
-
 .carousel__slide {
   padding: 5px;
 }
 
 .carousel__viewport {
-  perspective: 2000px;
+  position: relative;
 }
 
 .carousel__track {
@@ -157,10 +159,16 @@ onBeforeUnmount(() => {
 .item {
   position: relative;
   cursor: pointer;
+  transition: transform 0.3s ease, z-index 0.3s ease;
+  z-index: 1;
+  overflow: visible;
 }
 
-.item:hover {
-  transform: scale(1.05);
+.item.active-item {
+  z-index: 100;
+  position: absolute;
+  left: 0;
+  right: 0;
 }
 
 .info-popup {
@@ -177,9 +185,15 @@ onBeforeUnmount(() => {
   align-items: center;
   opacity: 0;
   transition: opacity 0.3s ease;
+  z-index: 5;
 }
 
-.item:hover .info-popup {
+.item.active-item .info-popup {
   opacity: 1;
+}
+
+.blank {
+  width: 100%;
+  height: 100px;
 }
 </style>

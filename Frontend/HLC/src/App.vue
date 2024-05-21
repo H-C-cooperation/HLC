@@ -1,6 +1,6 @@
 <template>
   <main class="bg-black text-white">
-    <div v-if="store.isLogin">
+    <div v-if="store.navFootView">
       <NavBar />
       <RouterView />
       <Footer />
@@ -18,6 +18,7 @@ import { RouterView } from 'vue-router';
 import { useMovieStore } from './stores/movie';
 
 const store = useMovieStore()
+
 </script>
 
 <style scoped>
