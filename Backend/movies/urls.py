@@ -20,8 +20,10 @@ urlpatterns = [
     path('movies/<int:movie_pk>/reviews/', views.review_list_or_create, name='review_list_or_create'),
     path('movies/<int:movie_pk>/reviews/<int:review_pk>/', views.review_detail, name='review_detail'),
     
-
     # review 좋아요
     path('reviews/<int:review_pk>/like/', views.review_like, name='review_like'),
+
+    # genre 좋아요
+    path('genres/<str:genre_name>/like/', views.genre_like, name='genre_like'),
     
 ]
