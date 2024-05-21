@@ -394,3 +394,22 @@ def review_like(request, review_pk):
     }
 
     return Response(context)
+
+# 장르 좋아요
+@api_view(['POST'])
+def genre_like(request, genre_name):
+    user = request.user
+    genre = get_object_or_404(Genre, name=genre_name)
+
+    if genre.like_users.filter(pk=user.pk).exists():
+        genre.like_users.remove(user)
+        liked = False
+    else:
+        genre.like_users.add(user)
+        liked =True
+    context ={
+        'liked' : liked,
+        'count' : genre.like_users.count(),
+    }
+
+    return Response(context)
