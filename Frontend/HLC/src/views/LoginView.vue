@@ -1,11 +1,10 @@
 <template>
   <div class="d-flex justify-content-center align-items-center back">
     <div class="bg-body-secondary bg-opacity-75 text-white p-5 text-center border border-dark border-2">
-      <div class="blank"></div>
       <a href="#" id="title">HLC</a>
       <br>
       <form @submit.prevent="logIn">
-        <p>아이디가 있으신가요?</p>
+        <h5 class="mb-5">아이디가 있으신가요?</h5>
         <div class="m-3">
           <p>
             <input class="mx-2" id="ID" type="text" placeholder="ID" v-model.trim="username">
@@ -16,7 +15,9 @@
         </div>
         <div class="text-center">
           <input class="me-3 btn btn-dark" type="submit" value="로그인">
-          <button class="btn" @click="goSignUp">가입하기</button>
+          <RouterLink :to="{ name: 'signup' }" class="btn">
+            회원가입  
+          </RouterLink>
         </div>
       </form>
     </div>
@@ -24,17 +25,11 @@
 </template>
 
 <script setup>
-import { useRouter } from 'vue-router';
 import { ref } from 'vue'
 import { useMovieStore } from '@/stores/movie';
+import { RouterLink } from 'vue-router';
 
-const router = useRouter()
 const store = useMovieStore()
-
-const goSignUp = function () {
-  router.push({ name: 'signup' })
-}
-
 const username = ref(null)
 const password = ref(null)
 
@@ -69,7 +64,7 @@ body {
 }
 
 #title {
-  color: #000000;
+  color: #ffffff;
   text-shadow: 0 20px 25px #2e2e31, 0 40px 60px #2e2e31;
   font-size: 50px;
   font-weight: bold;
@@ -77,7 +72,7 @@ body {
   letter-spacing: -3px;
   margin: 0;
   position: absolute;
-  top: 35%;
+  top: 20%;
   left: 50%;
   transform: translateX(-50%) translateY(-50%);
 }

@@ -21,32 +21,33 @@ const router = createRouter({
     {
       path: '/',
       name: 'login',
-      component: LoginView
+      component: LoginView,
     },
     {
       path: '/home',
       name: 'home',
-      component: HomeView
+      component: HomeView,
     },
     {
       path: '/movie',
       name: 'movie',
-      component: MovieView
+      component: MovieView,
     },
     {
       path: '/favorite',
       name: 'favorite',
-      component: FavoriteMovieView
+      component: FavoriteMovieView,
     },
     {
       path: '/movie/:moviePk',
       name: 'movieDetail',
-      component: MovieDetailView
+      component: MovieDetailView,
     },
     {
       path: '/movie/:moviePk/review',
       name: 'review',
-      component: ReviewView
+      component: ReviewView,
+      
     },
     {
       path: '/movie/:moviePk/create',
@@ -61,7 +62,7 @@ const router = createRouter({
     {
       path: '/profile',
       name: 'profile',
-      component: ProfileView
+      component: ProfileView,
     },
     {
       path: '/signup',
@@ -73,12 +74,14 @@ const router = createRouter({
 
 router.beforeEach((to, from) => {
   const store = useMovieStore()
-  if (to.name !== 'login' && to.name !== 'signup' && store.isLogin === false) {
-    window.alert('로그인이 필요합니다.')
-    return { name: 'login' }
+
+  if (to.name !== 'login' && to.name !== 'signup') {
+    store.navFootView = true
   } else {
     store.getMovies()
+    store.navFootView = false
   }
+
 })
 
 export default router

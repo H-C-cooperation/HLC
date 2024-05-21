@@ -1,9 +1,7 @@
 <template>
-  <div class="d-flex justify-content-center align-items-center back">
+  <div class="d-flex justify-content-center align-items-center back flex-column">
+    <a href="#" id="title">HLC</a>
     <div class="bg-body-secondary bg-opacity-75 text-white p-5 text-center border border-dark border-2">
-      <div class="blank"></div>
-      <a href="#" id="title">HLC</a>
-      <br>
       <form @submit.prevent="signUp">
         <h2>회원가입</h2>
         <div class="m-3">
@@ -19,7 +17,9 @@
         </div>
         <div class="text-center">
           <input class="btn btn-dark me-2" type="submit" value="회원가입">
-          <button class="btn" @click="goLogIn">로그인으로</button>
+          <RouterLink :to="{ name: 'login' }" class="btn">
+            로그인으로  
+          </RouterLink>
         </div>
       </form>
     </div>
@@ -29,14 +29,12 @@
 <script setup>
 import { ref } from 'vue';
 import { useMovieStore } from '@/stores/movie';
-import { useRouter } from 'vue-router';
 
 const username = ref(null)
 const password1 = ref(null)
 const password2 = ref(null)
 
 const store = useMovieStore()
-const router = useRouter()
 
 const signUp = function () {
   const payload = {
@@ -45,10 +43,6 @@ const signUp = function () {
     password2: password2.value
   }
   store.signUp(payload)
-}
-
-const goLogIn = function () {
-  router.push({ name: 'login' })
 }
 
 </script>
@@ -75,7 +69,7 @@ body {
 }
 
 #title {
-  color: #000000;
+  color: #ffffff;
   text-shadow: 0 20px 25px #2e2e31, 0 40px 60px #2e2e31;
   font-size: 50px;
   font-weight: bold;
@@ -83,7 +77,7 @@ body {
   letter-spacing: -3px;
   margin: 0;
   position: absolute;
-  top: 30%;
+  top: 20%;
   left: 50%;
   transform: translateX(-50%) translateY(-50%);
 }

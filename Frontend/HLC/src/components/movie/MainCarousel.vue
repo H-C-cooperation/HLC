@@ -1,11 +1,11 @@
 <template>
   <div class="mx-auto video">
     <Carousel id="gallery" :items-to-show="1" :wrap-around="false" v-model="currentSlide">
-      <Slide v-for="(movie) in movies" :key="movie.id">
+      <Slide v-for="movie in movies" :key="movie.id">
         <div style="width: 80%;">
           <div class="iframe-container">
             <iframe 
-              :src="movie.youtube_url + '?autoplay=1&mute=1&controls=0'" 
+              :src="movie.youtube_url + '?autoplay=1&mute=1&controls=0&loop=1'" 
               width="100%"
               height="100%"
               frameborder="0"
