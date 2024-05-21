@@ -35,6 +35,8 @@ class Actor(models.Model):
     id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=100)
     profile_path = models.CharField(max_length=150)
+    popularity = models.FloatField()
+
     def __str__ (self):
         return self.name
 

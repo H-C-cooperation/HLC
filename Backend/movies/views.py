@@ -20,7 +20,7 @@ import requests
 import json
 
 TMDB_API_KEY = 'd88c87eab4e60d92631748ce1dc8d7f5'
-YOUTUBE_API_KEY = 'AIzaSyACxJj878xh9pNgnBhs1yW_Ar7vOd0R7F0'
+YOUTUBE_API_KEY = 'AIzaSyAI-kpB7dla2r_o-i-tNYd-5Blgbta9hUg'
 # AIzaSyA3cQDQWcuogFV6t4oZrFXYR2ZfEOlvkpg
 # AIzaSyACxJj878xh9pNgnBhs1yW_Ar7vOd0R7F0
 def takeYoutubeUrl(movieTitle):
@@ -72,7 +72,7 @@ def takeGenre():
 
 def takeMovie():
     cnt = 0
-    for i in range(5, 11):
+    for i in range(5, 10):
         # TMDB API를 사용하여 영화 데이터 (인기) 가져오기
         movieURL = f"https://api.themoviedb.org/3/movie/popular?api_key={TMDB_API_KEY}&language=ko-KR&page={i}"
         movieList = requests.get(movieURL)
@@ -89,7 +89,7 @@ def takeMovie():
             # creditsData = detailData.get('credits')
 
             # 예외 처리 : 빈 값이 있을 수 있는 필드는 db에 저장하면 not null 에러가 난다 => 이를 제외하기 
-            if resData.get('release_date') == None or detailData.json().get('runtime') == None:
+            if resData.get('release_date') == None or detailData.json().get('runtime') == None or resData.get('backdrop_path') == None:
                 print(resData.get('release_date'), detailData.json().get('runtime'))
                 cnt += 1
                 continue
@@ -124,11 +124,13 @@ def takeMovie():
                 try:
                     actor_name = castDatas[j].get('name')
                     actor_id = castDatas[j].get('id')
-                    profile_path = castDatas[i].get('profile_path')
+                    profile_path = castDatas[j].get('profile_path')
+                    popularity = castDatas[j].get('popularity')
                     movieactor, chk3 = Actor.objects.get_or_create(
                         id = actor_id,
                         name = actor_name,
-                        profile_path = profile_path
+                        profile_path = profile_path,
+                        popularity = popularity
                     )
                     movie.actors.add(movieactor)
                 except:
