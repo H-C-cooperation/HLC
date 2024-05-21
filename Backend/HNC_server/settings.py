@@ -154,6 +154,14 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+STATICFILES_DIRS = [
+  BASE_DIR / 'static',
+]
+
+MEDIA_ROOT = BASE_DIR / 'media'
+
+MEDIA_URL = 'media/'
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
@@ -177,3 +185,5 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated', # => 기본적으로 인증받아야 사용 : 우리 프로젝트는 인증받은 사용자에게만 모든 정보를 줄 것이므로 이를 기본값으로 설정 후 view 함수 위 에 decorator를 안 달꺼임
     ]
 }
+
+
