@@ -1,63 +1,43 @@
 <template>
-    <div>
-        <span v-for="msg in messages" :key="msg">{{ msg }}</span>
-    </div>
+    <span>
+      {{ messages }}
+    </span>
 </template>
 
 <script setup>
 import { ref } from 'vue';
+import axios from 'axios';
+
+const apiKey = import.meta.env.VITE_GPT_KEY
 
 const props = defineProps({
-    movie: Object
+  movie: Object
 });
 
-const messages = ref([]);
+const messages = ref('');
 
-const addMessage = (message) => {
-    messages.value.push(message);
+const data = {
+  model: 'gpt-3.5-turbo',
+  messages: [
+    { role: 'system', content: '너는 영화를 설명하는 전문가야' },
+    { role: 'user', content: `${props.movie.title}의 스토리에 대한 설명을 반드시 15자 이내로 해줘` }
+  ],
+  max_tokens: 50,
+  n: 1,
+  stop: null,
+  temperature: 0.7
 };
 
-async function fetchChatGPTResponse(message, updateCallback) {
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${import.meta.env.VITE_GPT_KEY}`,
-        },
-        body: JSON.stringify({
-            model: 'gpt-4',
-            messages: [{ role: 'user', content: message }],
-            stream: true,
-        }),
-    });
-
-    const reader = response.body.getReader();
-    const decoder = new TextDecoder('utf-8');
-    let done = false;
-
-    while (!done) {
-        const { value, done: readerDone } = await reader.read();
-        done = readerDone;
-
-        if (value) {
-            const decodedValue = decoder.decode(value, { stream: true });
-            const lines = decodedValue.split('\n');
-            
-            for (const line of lines) {
-                if (line.trim() !== '') {
-                    const json = JSON.parse(line.slice(6));
-                    const content = json.choices[0]?.delta?.content || '';
-                    if (content) {
-                        updateCallback(content);
-                    }
-                }
-            }
-        }
-    }
-}
-
-
-fetchChatGPTResponse(`${props.movie.title} 영화의 간략 설명을 50자 이내로 해줘, 정보가 없다면 "정보가 없습니다."만 출력해줘`, addMessage);
+axios.post('https://api.openai.com/v1/chat/completions', data, {
+  headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${apiKey}`
+  }
+})
+  .then(res => {
+    messages.value = res.data.choices[0].message.content
+  })
+  .catch(err => console.log(err))
 </script>
 
 <style scoped>

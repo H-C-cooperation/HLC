@@ -37,10 +37,10 @@
     <template #addons>
       <navigation>
         <template #next>
-          <img src="../icons/arrow_forward.png" alt="arrow" width="30px" height="30px">
+          <img src="@/icons/arrow_forward.png" alt="arrow" width="30px" height="30px">
         </template>
         <template #prev>
-          <img src="../icons/arrow_back.png" alt="arrow" width="30px" height="30px">
+          <img src="@/icons/arrow_back.png" alt="arrow" width="30px" height="30px">
         </template>
       </navigation>
     </template>
@@ -69,7 +69,7 @@ const getMovies = function() {
   },
   params: {
     mode: 'genre',
-    inputGenre: '가족'
+    inputGenre: '모험'
   }
 })
   .then(res => {

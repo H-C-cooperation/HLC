@@ -15,6 +15,7 @@
 <script>
 import { useMovieStore } from '@/stores/movie'
 import { Swiper, SwiperSlide } from 'swiper/vue'
+import { onMounted } from 'vue';
 import 'swiper/swiper-bundle.css'
 
 export default {
@@ -33,6 +34,10 @@ export default {
       768: { slidesPerView: 4, spaceBetween: 20 },
       1024: { slidesPerView: 5, spaceBetween: 20 }
     }
+
+    onMounted(() => {
+      store.getMovies()
+    })
 
     return {
       movies,

@@ -16,15 +16,13 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useMovieStore } from '@/stores/movie'
 
 const store = useMovieStore()
-const activeMovie = ref(null)
-
 
 onMounted(() => {
-  store.getFavMovie()
+  store.getUserInfo()
 })
 
 </script>

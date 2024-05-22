@@ -14,6 +14,8 @@ import Recommendation from '@/views/RecommendationView.vue'
 import ProfileView from '@/views/ProfileView.vue'
 import SignUpView from '@/views/SignUpView.vue'
 import LoginView from '@/views/LoginView.vue'
+// genreselect
+import GenreSelectView from '@/views/GenreSelectView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -22,6 +24,11 @@ const router = createRouter({
       path: '/',
       name: 'login',
       component: LoginView,
+    },
+    {
+      path: '/select',
+      name: 'select',
+      component: GenreSelectView,
     },
     {
       path: '/home',
@@ -75,10 +82,9 @@ const router = createRouter({
 router.beforeEach((to, from) => {
   const store = useMovieStore()
 
-  if (to.name !== 'login' && to.name !== 'signup') {
+  if (to.name !== 'login' && to.name !== 'signup' && to.name !== 'select') {
     store.navFootView = true
   } else {
-    store.getMovies()
     store.navFootView = false
   }
 

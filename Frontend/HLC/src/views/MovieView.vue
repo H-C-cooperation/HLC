@@ -30,13 +30,13 @@
 <script setup>
 import { ref } from 'vue'
 import { useMovieStore } from '@/stores/movie'
-import MainCarousel from '@/components/movie/MainCarousel.vue'
-import SubCarousel1 from '@/components/movie/SubCarousel1.vue'
-import SubCarousel2 from '@/components/movie/SubCarousel2.vue'
-import SubCarousel3 from '@/components/movie/SubCarousel3.vue'
-import SubCarousel4 from '@/components/movie/SubCarousel4.vue'
-import SubCarousel5 from '@/components/movie/SubCarousel5.vue'
-import SubCarousel6 from '@/components/movie/SubCarousel6.vue'
+import MainCarousel from '@/components/movie/moviecarousel/MainCarousel.vue'
+import SubCarousel1 from '@/components/movie/moviecarousel/SubCarousel1.vue'
+import SubCarousel2 from '@/components/movie/moviecarousel/SubCarousel2.vue'
+import SubCarousel3 from '@/components/movie/moviecarousel/SubCarousel3.vue'
+import SubCarousel4 from '@/components/movie/moviecarousel/SubCarousel4.vue'
+import SubCarousel5 from '@/components/movie/moviecarousel/SubCarousel5.vue'
+import SubCarousel6 from '@/components/movie/moviecarousel/SubCarousel6.vue'
 
 const store = useMovieStore()
 

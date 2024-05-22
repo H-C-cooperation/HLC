@@ -27,7 +27,7 @@
             <h5 class="card-title">영화 설명</h5>
             <p>(chatGPT로 생성됨)</p>
             <CarouselHover class="mb-3 p-1 border border-danger-subtle" :movie="movie"/>
-            <a href="#" class="btn bg-danger bg-opacity-75 text-white">자세히 보기</a>
+            <a @click="goDetail(movie.id)" class="btn bg-danger bg-opacity-75 text-white">자세히 보기</a>
           </div>
         </div>
         <div class="blank"></div>
@@ -37,10 +37,10 @@
     <template #addons>
       <navigation>
         <template #next>
-          <img src="../icons/arrow_forward.png" alt="arrow" width="30px" height="30px">
+          <img src="@/icons/arrow_forward.png" alt="arrow" width="30px" height="30px">
         </template>
         <template #prev>
-          <img src="../icons/arrow_back.png" alt="arrow" width="30px" height="30px">
+          <img src="@/icons/arrow_back.png" alt="arrow" width="30px" height="30px">
         </template>
       </navigation>
     </template>
@@ -49,6 +49,7 @@
 
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { useRouter } from 'vue-router'
 import { Carousel, Navigation, Slide } from 'vue3-carousel'
 import { useMovieStore } from '@/stores/movie'
 import axios from 'axios'
@@ -56,6 +57,7 @@ import 'vue3-carousel/dist/carousel.css'
 import CarouselHover from '@/components/movie/CarouselHover.vue'
 
 const store = useMovieStore()
+const router = useRouter()
 const movies = ref([])
 const items = ref(0)
 const activeMovie = ref(null)
@@ -69,7 +71,7 @@ const getMovies = function() {
   },
   params: {
     mode: 'genre',
-    inputGenre: '범죄'
+    inputGenre: '애니메이션'
   }
 })
   .then(res => {
@@ -102,6 +104,10 @@ const showInfo = (movieId) => {
 
 const hideInfo = () => {
   activeMovie.value = null
+}
+
+const goDetail = function(moviePk) {
+  router.push({ name: 'movieDetail', params: { moviePk } })
 }
 
 onMounted(() => {
