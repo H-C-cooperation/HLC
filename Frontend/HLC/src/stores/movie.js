@@ -8,6 +8,10 @@ export const useMovieStore = defineStore('movie', () => {
   const API_URL = 'http://127.0.0.1:8000'
   const router = useRouter()
   const token = ref(null)
+  const userId = ref(0)
+  const userInfo = ref({})
+
+
   const genres = ref([
       "액션",
       "모험",
@@ -79,6 +83,7 @@ export const useMovieStore = defineStore('movie', () => {
       }
     })
       .then(res => {
+        // console.log(res.data)
         token.value = res.data.key
         router.push({ name: 'home' })
       })
@@ -88,12 +93,75 @@ export const useMovieStore = defineStore('movie', () => {
   const isLogin = computed(() => {
     if (token.value === null) {
       return false
-    } else {
+    } else {        
       return true
     }
   })
 
-  const navFootView = ref(true)
+  const getFavMoview = function() {
+    axios ({
+      method: 'get',
+      url: `${API_URL}/accounts/user/`,
+      headers: {
+        Authorization: `Token ${token.value}`
+      },
+    })
+      .then(res => {
+        userId.value = res.data.pk
+        
+        axios ({
+          method: 'get',
+          url: `${API_URL}/accounts/${userId.value}/`,
+          headers: {
+            Authorization: `Token ${token.value}`
+          },
+        })
+          .then(res => {
+            userInfo.value = res.data
+          })
+          .catch(err => console.log(err))
+      })
+      .catch(err => console.log(err))
+  }
 
-  return { movies, API_URL, getMovies, signUp, logIn, token, isLogin, genres, navFootView }
+  // MoviesList (영화 리스트 조회)
+  // const takeMoviesList = function 
+
+
+
+  // MovieDetail (영화 단일 조회)
+  const takeMovieDetail = async function (movie_pk) {
+    try {
+      const response = await axios({
+        method: 'get',
+        url: `${API_URL}/api/v1/movies/${movie_pk}`,
+        headers: {
+          Authorization: `Token ${token.value}`,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  };
+
+  const takeMovieDetailReview = async function (movie_pk) {
+    try {
+      const response = await axios({
+        method: 'get',
+        url: `${API_URL}/api/v1/movies/${movie_pk}/reviews`,
+        headers: {
+          Authorization: `Token ${token.value}`,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  };
+  
+
+  return { movies, API_URL, getMovies, signUp, logIn, token, isLogin, genres, takeMovieDetail, takeMovieDetailReview, getFavMoview, userId, userInfo }
 }, { persist: true })

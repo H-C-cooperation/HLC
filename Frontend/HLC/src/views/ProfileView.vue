@@ -99,7 +99,11 @@
   </div>
 </template>
 
-<script setup></script>
+<script setup>
+import { useMovieStore } from '@/stores/movie';
+
+const store = useMovieStore()
+</script>
 
 <style scoped>
 
