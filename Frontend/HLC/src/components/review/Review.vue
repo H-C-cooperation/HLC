@@ -6,10 +6,15 @@
       <p class="m-0">{{ review.user.username }}</p>
     </div>
     <div style="width: 160px">
-      <!-- for 문으로 이 유저가 준 별점만큼 바로 아래의 span태그를 반복하기 ( )-->
-      <span class="redstar" v-for="n in review.rate">⭐</span>
-      <!-- for문으로 (5-별점)만큼 바로 아래의 span태그를 반복하기( ) -->
-      <span class="whitestar" v-for="n in (5 - review.rate)">⭐</span>
+      {{ review.rate }}
+      <!-- for 문으로 이 유저가 준 별점만큼 바로 아래의 span태그를 반복하기 -->
+      <template v-if="review.rate > 0">
+        <span class="redstar" v-for="n in review.rate">⭐</span>
+      </template>
+      <!-- for문으로 (5-별점)만큼 바로 아래의 span태그를 반복하기 -->
+      <template v-if="review.rate < 5">
+        <span class="whitestar" v-for="n in (5 - review.rate)">⭐</span>
+      </template>
     </div>
     <div class="reviews">
       <div class="reviewcontent">{{ review.content}}</div>
@@ -22,17 +27,24 @@
       <span class="whiteheart" v-else @click="toggleLike">❤️</span>
       <!-- 하트 누를 때마다 좋아요 했다안했다되고 색깔도 바뀌도록( ) -->
       <span style="font-size: 13px">{{ review.like_users.length }}</span>
+
+      <button @click="store.deleteReview(review.id)" v-if="store.userId === review.user.id">Delete</button>
+
     </div>
   </div>
   
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { computed, onMounted } from 'vue';
 import { useMovieStore } from '@/stores/movie';
 import axios from 'axios';
 
 const store = useMovieStore()
+
+onMounted(() => {
+  store.getUserInfo()
+});
 
 const props = defineProps({
   review:Object,
