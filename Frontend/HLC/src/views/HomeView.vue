@@ -1,76 +1,44 @@
 <template>
   <h1>홈</h1>
-  <div class="movie-carousel">
-    <swiper :slides-per-view="5" :space-between="20" :breakpoints="breakpoints">
-      <swiper-slide v-for="movie in movies" :key="movie.id">
-        <div class="movie-card">
-          <img :src="`https://image.tmdb.org/t/p/w200/${movie.poster_path}`" :alt="movie.title" />
-          <p>{{ movie.title }}</p>
-        </div>
-      </swiper-slide>
-    </swiper>
-  </div>
+  <HomeCarouel 
+    v-for="genre in genres"
+    :key="genre.id"
+    :genre="genre"
+  />
 </template>
 
-<script>
+<script setup>
 import { useMovieStore } from '@/stores/movie'
 import { Swiper, SwiperSlide } from 'swiper/vue'
-import { onMounted } from 'vue';
-import 'swiper/swiper-bundle.css'
+import { ref, onMounted } from 'vue';
+import HomeCarouel from '@/components/movie/homecarousel/HomeCarousel.vue'
+import axios from 'axios';
 
-export default {
-  components: {
-    Swiper,
-    SwiperSlide
-  },
-  setup() {
-    const store = useMovieStore()
-    const movies = store.movies
+const store = useMovieStore()
+const genres = ref([])
 
-    const breakpoints = {
-      320: { slidesPerView: 1, spaceBetween: 10 },
-      480: { slidesPerView: 2, spaceBetween: 20 },
-      640: { slidesPerView: 3, spaceBetween: 20 },
-      768: { slidesPerView: 4, spaceBetween: 20 },
-      1024: { slidesPerView: 5, spaceBetween: 20 }
+const getGenres = function () {
+  axios({
+    method: 'get',
+    url: `${store.API_URL}/accounts/${store.userId}/`,
+    headers: {
+      Authorization: `Token ${store.token}`
     }
-
-    onMounted(() => {
-      store.getMovies()
+  })
+    .then(res => {
+      for (const obj of res.data.like_genres) {
+        genres.value.push(obj.name)
+      }
+      console.log(genres)
     })
-
-    return {
-      movies,
-      breakpoints
-    }
-  }
+    .catch(err => console.log(err))
 }
+
+onMounted(() => {
+  store.getUserInfo()
+  getGenres()
+})
 </script>
 
 <style scoped>
-.movie-carousel {
-  width: 100%;
-  margin: auto;
-  overflow: hidden;
-}
-
-.movie-card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.movie-card img {
-  width: 200px;
-  height: 300px;
-  object-fit: cover;
-  border-radius: 10px;
-}
-
-.movie-card p {
-  text-align: center;
-  margin-top: 5px;
-  font-size: 1rem;
-  color: #fff;
-}
 </style>

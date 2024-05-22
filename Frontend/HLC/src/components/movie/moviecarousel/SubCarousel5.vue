@@ -15,6 +15,7 @@
       >
         <div class="blank"></div>
         <img class="carousel__item" :src="`https://image.tmdb.org/t/p/w200/${movie.poster_path}`" :alt="movie.title"/>
+        <h5 class="text-white mt-5">{{ movie.title }}</h5>
         <div class="card-body">
           <div v-if="activeMovie === movie.id" class="info-popup">
             <iframe 

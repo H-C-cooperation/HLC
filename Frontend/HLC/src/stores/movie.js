@@ -10,7 +10,8 @@ export const useMovieStore = defineStore('movie', () => {
   const token = ref(null)
   const userId = ref(0)
   const userInfo = ref({})
-
+  const isSignUp = ref(false)
+  const genreMovies = ref([])
 
   const genres = ref([
       "액션",
@@ -53,6 +54,26 @@ export const useMovieStore = defineStore('movie', () => {
       })
   }
 
+  const getMoviesByGenre = async function (genre) {
+    try {
+      axios({
+        method: 'get',
+        url: `${API_URL}/api/v1/movies/`,
+        headers: {
+          Authorization: `Token ${token.value}`
+        },
+        params: {
+          mode: 'genre',
+          inputGenre: genre
+        }
+      })
+      genreMovies.value = res.data
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  };
+
 
   const signUp = function (payload) {
     const { username, password1, password2 } = payload
@@ -66,6 +87,7 @@ export const useMovieStore = defineStore('movie', () => {
     })
       .then(res => {
         const password = password1
+        isSignUp.value = true
         logIn({ username, password })
       })
       .catch(err => console.log(err))
@@ -83,9 +105,13 @@ export const useMovieStore = defineStore('movie', () => {
       }
     })
       .then(res => {
-        // console.log(res.data)
         token.value = res.data.key
-        router.push({ name: 'select' })
+        if (isSignUp.value === true) {
+          isSignUp.value = false
+          router.push({ name: 'select' })
+        } else {
+          router.push({ name: 'home' })
+        }
       })
       .catch(err => console.log(err))
   }
@@ -163,5 +189,5 @@ export const useMovieStore = defineStore('movie', () => {
   };
   
 
-  return { movies, API_URL, getMovies, signUp, logIn, token, isLogin, genres, takeMovieDetail, takeMovieDetailReview, getUserInfo, userId, userInfo }
+  return { movies, API_URL, getMovies, getMoviesByGenre, signUp, logIn, token, isLogin, genres, takeMovieDetail, takeMovieDetailReview, getUserInfo, userId, userInfo }
 }, { persist: true })

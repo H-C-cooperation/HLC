@@ -28,12 +28,6 @@
               <span class="nav-link text-black">{{ store.userInfo.like_movies.length }}</span>
             </div>
           </li>
-          <li class="nav-item mx-1">
-              <RouterLink 
-                class="nav-link text-white"
-                :to="{ name: 'select' }"
-              >장르선택</RouterLink>   
-          </li>
         </ul>
         <form class="d-flex" role="search">
           <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
