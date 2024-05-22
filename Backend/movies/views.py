@@ -309,9 +309,9 @@ def review_list_or_create(request, movie_pk):
     # 리뷰 생성
     elif request.method == 'POST':
 
-        # 현재 사용자가 작성한 리뷰가 영화 리뷰에 있는 경우 => 새로운 리뷰 작성 불가능
-        if request.user in [review.user for review in movie.reviews.all()]:
-            return Response({'message':'현재 작성된 리뷰가 존재합니다.'}, status=status.HTTP_400_BAD_REQUEST)
+        # # 현재 사용자가 작성한 리뷰가 영화 리뷰에 있는 경우 => 새로운 리뷰 작성 불가능
+        # if request.user in [review.user for review in movie.reviews.all()]:
+        #     return Response({'message':'현재 작성된 리뷰가 존재합니다.'}, status=status.HTTP_400_BAD_REQUEST)
 
         serializer = ReviewDetailSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
@@ -322,7 +322,10 @@ def review_list_or_create(request, movie_pk):
             movie.vote_count += 1
             movie.save()
 
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            # 생성된 리뷰를 ReviewSerializer를 사용하여 응답
+            response_serializer = ReviewSerializer(review)
+
+            return Response(response_serializer.data, status=status.HTTP_201_CREATED)
 
 
 # 단일 리뷰 조회 & 수정 & 삭제
@@ -386,16 +389,13 @@ def review_like(request, review_pk):
 
     if review.like_users.filter(pk=user.pk).exists():
         review.like_users.remove(user)
-        liked = False
     else:
         review.like_users.add(user)
-        liked =True
-    context ={
-        'liked' : liked,
-        'count' : review.like_users.count(),
-    }
+    
+    # 생성된 리뷰를 ReviewDetailSerializer 사용하여 응답
+    response_serializer = ReviewDetailSerializer(review)   
 
-    return Response(context)
+    return Response(response_serializer.data)
 
 # 장르 좋아요
 @api_view(['POST'])

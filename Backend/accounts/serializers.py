@@ -11,7 +11,7 @@ class UserSerializer(serializers.ModelSerializer):
     class MovieProfileSerializer(serializers.ModelSerializer):
         class Meta:
             model = Movie
-            fields = ('id', 'title', 'poster_path', )
+            fields = ('id', 'title', 'poster_path', 'youtube_url', )
     
     class ReviewProfileSerializer(serializers.ModelSerializer):
         class Meta:
