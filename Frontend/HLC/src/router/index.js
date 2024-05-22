@@ -67,7 +67,7 @@ const router = createRouter({
       component: Recommendation
     },
     {
-      path: '/profile',
+      path: '/profile/:userPk',
       name: 'profile',
       component: ProfileView,
     },
