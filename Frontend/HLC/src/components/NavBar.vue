@@ -20,12 +20,19 @@
             >영화</RouterLink>
           </li>
           <li class="nav-item mx-1">
+            <RouterLink 
+              class="nav-link text-white"
+              :to="{ name: 'select' }"
+            >선택</RouterLink>
+          </li>
+          <li class="nav-item mx-1">
             <div class="favorites text-center d-flex justify-content-center align-items-center">
               <RouterLink 
                 class="nav-link text-black"
                 :to="{ name: 'favorite' }"
               >찜</RouterLink>   
-              <span class="nav-link text-black">{{ store.userInfo.like_movies.length }}</span>
+              <span v-if="store.userInfo.like_movies" class="nav-link text-black">{{ store.userInfo.like_movies.length }}</span>
+              <span v-else>0</span>
             </div>
           </li>
         </ul>

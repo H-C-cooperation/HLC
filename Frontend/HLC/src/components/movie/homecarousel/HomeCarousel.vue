@@ -1,56 +1,61 @@
 <template>
-  <p>{{ props.genre }}</p>
-  <p v-if="store.getMoviesByGenre()"></p>
-  <p>{{ store.getMoviesByGenre(props.genre) }}</p>
-  <!-- <Carousel 
-  :itemsToShow="items" 
-  :wrapAround="true" 
-  :transition="500"
-  navigationNextLabel=""
-  navigationPrevLabel=""
-  >
-    <h3><span class="genre">{{ props.genre }}</span>장르 인기 영화들</h3>
-    <Slide v-for="movie in store.getMoviesByGenre(props.genre)" :key="movie.id">
-      <div 
-        class="card bg-black"
-        :class="['item', { 'active-item': activeMovie === movie.id }]" 
-        @mouseover="showInfo(movie.id)"
-        @mouseleave="hideInfo(movie.id)"
+  <div>
+    <h3><span class="text-warning">{{ genre }}</span> 장르의 인기 영화들 <img src="@/icons/popcorn.png" alt="movie" width="40px"></h3> 
+    <hr style="border: solid 2px #fff;">
+    <div v-if="movies.length > 3">
+      <Carousel 
+        :itemsToShow="items" 
+        :wrapAround="false" 
+        :transition="500"
+        snapAlign="center"
+        navigationNextLabel=""
+        navigationPrevLabel=""
       >
-        <div class="blank"></div>
-        <img class="carousel__item" :src="`https://image.tmdb.org/t/p/w200/${movie.poster_path}`" :alt="movie.title"/>
-        <div class="card-body">
-          <div v-if="activeMovie === movie.id" class="info-popup">
-            <iframe 
-            :src="`${movie.youtube_url}?autoplay=1&mute=1&controls=0&modestbranding=1&rel=0`" 
-            width="100%"
-            height="50%"
-            frameborder="0"
-            class="iframe-content"
-            ></iframe>
-            <h5 class="card-title">영화 설명</h5>
-            <p>(chatGPT로 생성됨)</p>
-            <CarouselHover class="mb-3 p-1 border border-danger-subtle" :movie="movie"/>
-            <a href="#" class="btn bg-danger bg-opacity-75 text-white">자세히 보기</a>
+        <Slide v-for="movie in movies" :key="movie.id">
+          <div 
+            class="card bg-black"
+            :class="['item', { 'active-item': activeMovie === movie.id }]" 
+            @mouseover="showInfo(movie.id)"
+            @mouseleave="hideInfo(movie.id)"
+          >
+            <img class="carousel__item" :src="`https://image.tmdb.org/t/p/w200/${movie.poster_path}`" :alt="movie.title"/>
+            <h5 class="text-white m-5">{{ movie.title }}</h5>
+            <div class="card-body">
+              <div v-if="activeMovie === movie.id" class="info-popup">
+                <iframe 
+                  :src="`${movie.youtube_url}?autoplay=1&mute=1&controls=0&modestbranding=1&rel=0`" 
+                  width="100%"
+                  height="50%"
+                  frameborder="0"
+                  class="iframe-content"
+                ></iframe>
+                <h5 class="card-title">영화 설명</h5>
+                <p>(chatGPT로 생성됨)</p>
+                <CarouselHover class="mb-3 p-1 border border-danger-subtle" :movie="movie"/>
+                <a href="#" class="btn bg-danger bg-opacity-75 text-white">자세히 보기</a>
+              </div>
+            </div>
           </div>
-        </div>
-        <div class="blank"></div>
-      </div>
-    </Slide>
-
-    <template #addons>
-      <navigation>
-        <template #next>
-          <img src="@/icons/arrow_forward.png" alt="arrow" width="30px" height="30px">
+        </Slide>
+    
+        <template #addons>
+          <navigation>
+            <template #next>
+              <img src="@/icons/arrow_forward.png" alt="arrow" width="30px" height="30px">
+            </template>
+            <template #prev>
+              <img src="@/icons/arrow_back.png" alt="arrow" width="30px" height="30px">
+            </template>
+          </navigation>
         </template>
-        <template #prev>
-          <img src="@/icons/arrow_back.png" alt="arrow" width="30px" height="30px">
-        </template>
-      </navigation>
-    </template>
-  </Carousel> -->
+      </Carousel>
+    </div>
+    <div v-else class="text-center my-5">
+      <h5>충분한 영화가 없습니다.</h5>
+    </div>
+  </div>
 </template>
-
+  
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { Carousel, Navigation, Slide } from 'vue3-carousel'
@@ -67,26 +72,6 @@ const store = useMovieStore()
 const movies = ref([])
 const items = ref(0)
 const activeMovie = ref(null)
-
-const getMovies = function() {
-  axios({
-  method: 'get',
-  url: `${store.API_URL}/api/v1/movies/`,
-  headers: {
-    Authorization: `Token ${store.token}`
-  },
-  params: {
-    mode: 'genre',
-    inputGenre: '액션'
-  }
-})
-  .then(res => {
-    movies.value = res.data
-  })
-  .catch(err => {
-    console.log(err)
-  })
-}
 
 const updateItems = () => {
   if (window.innerWidth >= 1400) {
@@ -112,9 +97,18 @@ const hideInfo = () => {
   activeMovie.value = null
 }
 
-onMounted(() => {
-  getMovies()
+const getMovies = async function() {
+  try {
+    const movieData = await store.getMoviesByGenre(props.genre)
+    movies.value = movieData
+  } catch (error) {
+    console.error('Error fetching movies:', error)
+  }
+}
+
+onMounted(async () => {
   updateItems()
+  await getMovies()
   window.addEventListener('resize', updateItems)
 })
 
@@ -209,3 +203,4 @@ onBeforeUnmount(() => {
   color: yellow;
 }
 </style>
+
