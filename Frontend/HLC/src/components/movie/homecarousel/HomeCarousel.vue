@@ -1,12 +1,16 @@
 <template>
-  <Carousel 
-    :itemsToShow="items" 
-    :wrapAround="true" 
-    :transition="500"
-    navigationNextLabel=""
-    navigationPrevLabel=""
+  <p>{{ props.genre }}</p>
+  <p v-if="store.getMoviesByGenre()"></p>
+  <p>{{ store.getMoviesByGenre(props.genre) }}</p>
+  <!-- <Carousel 
+  :itemsToShow="items" 
+  :wrapAround="true" 
+  :transition="500"
+  navigationNextLabel=""
+  navigationPrevLabel=""
   >
-    <Slide v-for="movie in movies" :key="movie.id">
+    <h3><span class="genre">{{ props.genre }}</span>장르 인기 영화들</h3>
+    <Slide v-for="movie in store.getMoviesByGenre(props.genre)" :key="movie.id">
       <div 
         class="card bg-black"
         :class="['item', { 'active-item': activeMovie === movie.id }]" 
@@ -44,7 +48,7 @@
         </template>
       </navigation>
     </template>
-  </Carousel>
+  </Carousel> -->
 </template>
 
 <script setup>
@@ -54,6 +58,10 @@ import { useMovieStore } from '@/stores/movie'
 import axios from 'axios'
 import 'vue3-carousel/dist/carousel.css'
 import CarouselHover from '@/components/movie/CarouselHover.vue'
+
+const props = defineProps({
+  genre: String
+})
 
 const store = useMovieStore()
 const movies = ref([])
@@ -195,5 +203,9 @@ onBeforeUnmount(() => {
 .blank {
   width: 100%;
   height: 100px;
+}
+
+.genre {
+  color: yellow;
 }
 </style>
