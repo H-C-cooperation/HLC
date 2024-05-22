@@ -1,4 +1,4 @@
-<p align=center><img src="https://github.com/DevelopJian/Studying/assets/156268818/cc4353c9-34ac-4f5c-a363-7081e212554e"></p>
+<p align=center><img src="READMEimg/HLClogo.png"></p>
 <div align=center><h1>HLC 영화 추천 Web Service</h1></div>
 
 <br/>
@@ -76,17 +76,17 @@
 
 ## 3. 서비스 설계
 ### 1) 와이어프레임 
-![피그마](https://github.com/DevelopJian/Studying/assets/156268818/4b26d6f8-da03-45e5-8d34-996d10bea79b)
+<img src="READMEimg/피그마.PNG">
 
 ### 2) 데이터 베이스 모델링 (ERD)
-![영화 ERD](https://github.com/DevelopJian/Studying/assets/156268818/2d99009d-3275-4c30-8406-27f49ec99ed8)
+<img src="READMEimg/영화ERD.png">
 - [ERD Cloud Link](https://www.erdcloud.com/d/SqN2RmTDs2krrb6ji) 
 
 ### 3) django URL 명세서
-![URL명세서](https://github.com/DevelopJian/Studying/assets/156268818/a9b07b84-cb3a-4edc-8a30-1cc10916a15b)
+<img src="READMEimg/URL명세서.PNG">
 
 ### 4) Vue 컴포넌트 구조
-![컴포넌트구조](https://github.com/DevelopJian/Studying/assets/156268818/16ba00f8-6c5d-4918-949a-3aa130ee033e)
+<img src="READMEimg/컴포넌트구조.png">
 
 ### 5) 팀원 및 업무분담
 |팀원|업무|
