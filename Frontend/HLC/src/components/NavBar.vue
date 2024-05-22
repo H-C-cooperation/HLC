@@ -44,7 +44,7 @@
         </form>
         <RouterLink
           class="btn"
-          :to="{ name: 'profile' }"
+          :to="{ name: 'profile', params:{userPk:store.userId}}"
         >
           <div class="dropdown">
             <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -72,7 +72,7 @@ const router = useRouter()
 const store = useMovieStore()
 
 const goProfile = function () {
-  router.push({ name: 'profile' })
+  router.push({ name: 'profile', params:{userPk:store.userId}})
 }
 
 const logOut = function () {

@@ -1,45 +1,46 @@
 <template>
-  <div class="outer bg-black">
+  <div class="outer bg-black" v-if="targetInfo">
     <div class="outline">
       <header>
+        <!-- {{ store.userInfo }} 
+        <hr>
+        {{ targetInfo }} -->
         <!-- 1. v-if 내프로필이라면 ( ) -->
-        <h1>프로필 수정</h1>
+        <h1 v-if="isMyProfile">프로필 수정</h1>
         <!-- 2. v-if 다른사람 프로필이라면 ( ) -->
-        <h1><!--다른사람이름--> {{ }} 님의 프로필</h1>
+        <h1 v-else><!--다른사람이름--> {{ targetInfo.username }} 님의 프로필</h1>
 
         <hr />
       </header>
       <nav>
         <!-- 1. v-if 내 프로필이라면 -->
-        <div class="d-flex align-items-center">
+        <div class="d-flex align-items-center" v-if="isMyProfile">
           <!-- 내프로필 이미지로 img src 고쳐야함 ( ) -->
-          <img src="./assets/profile.png" alt="my img" class="m-3" />
+          <img :src="store.userInfo.image" alt="my img" class="m-3" />
           <div class="inputbox d-flex flex-column">
               <input
                 type="text"
                 placeholder="유저 이름"
-                onfocus="this.placeholder=''"
-                onblur="this.placeholder='유저 이름'"
+                v-model="store.userInfo.username"
                 class="inputbox bg-secondary-subtle m-2"
               />
               <input
                 type="text"
                 placeholder="유저 이메일"
-                onfocus="this.placeholder=''"
-                onblur="this.placeholder='유저 이메일'"
+                v-model="store.userInfo.email"
                 class="inputbox bg-secondary-subtle m-2"
               />
           </div>
         </div>
 
         <!-- 2. v-if 다른사람 프로필이라면 -->
-        <div class="d-flex align-items-center">
+        <div class="d-flex align-items-center" v-else>
           <!-- 프로필 이미지로 img src 고쳐야함 ( ) -->
-          <img src="./assets/profile.png" alt="my img" class="m-3" />
+          <img :src="targetInfo.image" alt="my img" class="m-3" />
           <div class="d-flex flex-column align-content-center">
             <!-- 이름, 이메일 넣기 ( ) -->
-              <p style="margin:auto; padding: 5px; ">NAME : {{  }}</p>
-              <p style="margin:auto; padding: 5px;">EMAIL : {{  }}</p>
+              <p style="margin:auto; padding: 5px; ">NAME : {{ targetInfo.username }}</p>
+              <p style="margin:auto; padding: 5px;">EMAIL : {{ targetInfo.email }}</p>
           </div>
         </div>
         <button class="f-btn ms-3">Follow</button>  <button class="f-btn"> Following</button>
@@ -100,9 +101,40 @@
 </template>
 
 <script setup>
+import { ref ,onMounted } from 'vue';
+import { useRoute } from 'vue-router';
 import { useMovieStore } from '@/stores/movie';
+import axios from 'axios';
+
+onMounted(() => {
+  store.getUserInfo,
+  getTargetUserInfo()
+})
 
 const store = useMovieStore()
+const route = useRoute()
+const targetInfo = ref([])
+const isMyProfile = ref(false)
+
+// 타켓 유저 정보 가져오기 : route.params.userPk
+const getTargetUserInfo = () => {
+  axios({
+    method:'get',
+    url: `${store.API_URL}/accounts/${route.params.userPk}/`,
+    headers: {
+      Authorization: `Token ${store.token}`
+    }
+  })
+    .then(res => {
+      console.log(res.data)
+      targetInfo.value = res.data
+      isMyProfile.value = store.userId === res.data.id
+    })
+    .catch(err => console.log(err))
+} 
+
+
+
 </script>
 
 <style scoped>
