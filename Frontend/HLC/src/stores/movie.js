@@ -12,6 +12,10 @@ export const useMovieStore = defineStore('movie', () => {
   const userInfo = ref({})
   const isSignUp = ref(false)
 
+  // Movie Detail 에서 사용
+  const detailMovie = ref({})
+  const detailReviews = ref([])
+  
   const genres = ref([
       "액션",
       "모험",
@@ -148,11 +152,6 @@ export const useMovieStore = defineStore('movie', () => {
       .catch(err => console.log(err))
   }
 
-  // MoviesList (영화 리스트 조회)
-  // const takeMoviesList = function 
-
-
-
   // MovieDetail (영화 단일 조회)
   const takeMovieDetail = async function (movie_pk) {
     try {
@@ -163,13 +162,14 @@ export const useMovieStore = defineStore('movie', () => {
           Authorization: `Token ${token.value}`,
         },
       });
-      return response.data;
+      detailMovie.value =  response.data;
     } catch (error) {
       console.error(error);
       throw error;
     }
   };
 
+  // 영화에 연결된 리뷰 리스트 조회
   const takeMovieDetailReview = async function (movie_pk) {
     try {
       const response = await axios({
@@ -179,13 +179,83 @@ export const useMovieStore = defineStore('movie', () => {
           Authorization: `Token ${token.value}`,
         },
       });
-      return response.data;
+      detailReviews.value = response.data
     } catch (error) {
       console.error(error);
       throw error;
     }
   };
+
+  // review 생성 , 업데이트  동시에 할 수 있게해주는 함수
+  const createOrUpdateReview = async function(reviewId, rate, content) {
+    let response;
+    try {
+      console.log('reviewId---', reviewId)
+      if (reviewId !== -1) {
+        // Update existing review
+          response = await axios({
+          method: 'patch',
+          url: `${API_URL}/api/v1/movies/${detailMovie.value.id}/reviews/${reviewId}/`,
+          headers: {
+            Authorization: `Token ${token.value}`,
+          },
+          data: {
+            rate,
+            content
+          }
+        });
+        console.log('DB에서 리뷰 수정 작업이 완료되었습니다.');
+  
+        // Update the local review list
+        detailReviews.value = detailReviews.value.map((review) => {
+          if (review.id === reviewId) {
+            review.rate = rate;
+            review.content = content;
+          }
+          return review;
+        });
+      } else {
+        // Create new review
+        response = await axios({
+          method: 'post',
+          url: `${API_URL}/api/v1/movies/${detailMovie.value.id}/reviews/`,
+          headers: {
+            Authorization: `Token ${token.value}`,
+          },
+          data: {
+            rate,
+            content
+          }
+        });
+        // Add the new review to the local review list
+        detailReviews.value.push(response.data);
+        console.log('리뷰가 성공적으로 작성되었습니다.');
+      }
+  
+    } catch (error) {
+      console.error('There was an error!', error);
+      alert('리뷰를 제출하는 도중 오류가 발생했습니다. 다시 시도해주세요.');
+    }
+  };
+
+  const deleteReview = function (reviewId) {
+    axios({
+      method:'delete',
+      url: `${API_URL}/api/v1/movies/${detailMovie.value.id}/reviews/${reviewId}/`,
+      headers: {
+        Authorization: `Token ${token.value}`,
+      },
+    })
+      .then(res => console.log('DB에서 리뷰 삭제 작업이 완료되었습니다.'))
+      .catch(err => console.log(err))
+    
+      const index = detailReviews.value.findIndex((review) => review.id === reviewId)
+      detailReviews.value.splice(index, 1)
+  }
+
   
 
-  return { movies, API_URL, getMovies, getMoviesByGenre, signUp, logIn, token, isLogin, genres, takeMovieDetail, takeMovieDetailReview, getUserInfo, userId, userInfo }
+  return { movies, API_URL, getMovies, getMoviesByGenre, signUp, logIn, token, isLogin, genres, 
+    getUserInfo, userId, userInfo,
+    detailMovie, detailReviews, takeMovieDetail, takeMovieDetailReview, createOrUpdateReview, deleteReview }
 }, { persist: true })

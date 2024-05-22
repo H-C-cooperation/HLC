@@ -1,23 +1,20 @@
 <template>
-  <div v-if="movie" class="outer bg-black">
+  <div v-if="store.detailMovie" class="outer bg-black">
     <div>
       <div class="cards videobox mb-3">
-        <!-- 이 div에 유튜브 영화 예고편 넣기 ( ) -->
-        <iframe :src="movie.youtube_url" frameborder="0" width="100%" height="100%"></iframe>
+        <iframe v-if="store.detailMovie.youtube_url" :src="store.detailMovie.youtube_url" frameborder="0" width="100%" height="100%"></iframe>
       </div>
       <div class="cards d-flex mb-3">
-        <div class="infobox title">{{ movie.title }}</div>
-        <div class="infobox cast">{{ movie.actors[0].name }}</div>
+        <div class="infobox title">{{ store.detailMovie.title }}</div>
+        <div class="infobox cast">{{ store.detailMovie.actors && store.detailMovie.actors.length > 0 ? store.detailMovie.actors[0].name : 'Unknown' }}</div>
       </div>
-      <div class="cards summarybox mb-3 scrollbar">{{ movie.overview }}</div>
+      <div class="cards summarybox mb-3 scrollbar">{{ store.detailMovie.overview }}</div>
 
-      <!-- 반복문으로 리뷰쓴사람사진, 이름, 별점, 내용 넣기 ( ) -->
-      <div class="cards reviewbox mb-3 scrollbar">
-          <!-- 바로 밑에 있는게 리뷰 한개 div임. 리뷰 전체 반복하기 ( ) -->
-          <Review v-for="review in reviews" :key="review.id" :review="review"></Review>
+      <div class="cards reviewbox mb-3 scrollbar" v-if="detailReviews && detailReviews.length > 0">
+          <Review v-for="review in detailReviews" :key="review.id" :review="review"></Review>
       </div>
       <div class="cards createreviewbox">
-          <ReviewCreate :movie="movie" @reviewSubmitted="addReview"></ReviewCreate>
+          <ReviewCreate v-if="store.detailMovie" :movie="store.detailMovie"></ReviewCreate>
       </div>
     </div>
   </div>
@@ -28,42 +25,41 @@ import Review from '@/components/review/Review.vue';
 import ReviewCreate from '@/components/review/ReviewCreate.vue';
 import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
+import { storeToRefs } from 'pinia';
 import { useMovieStore } from '@/stores/movie';
 import axios from 'axios';
 
-// const route = useRoute();
+const route = useRoute();
 const store = useMovieStore();
-const movie = ref(null);
+const {detailReviews} = storeToRefs(store)
+// const props = defineProps({
+//   movieInfo:Object
+// })
 
-const props = defineProps({
-  movieInfo:Object
-})
 
+// const loadMovieDetail = async () => {
+//   try {
+//     movie.value = await store.takeMovieDetail(props.movieInfo.id);
+//   } catch (error) {
+//     console.error('Failed to load movie detail:', error);
+//   }
+// };
+// const loadReviews = async () => {
+//   try {
+//       reviews.value = await store.takeMovieDetailReview(props.movieInfo.id)
+//   } catch (error) {
+//       console.error('Failed to load reviews:', error);
+//   }
+// };
 
-const reviews = ref(null);
-
-const loadMovieDetail = async () => {
-  try {
-    movie.value = await store.takeMovieDetail(props.movieInfo.id);
-  } catch (error) {
-    console.error('Failed to load movie detail:', error);
-  }
-};
-const loadReviews = async () => {
-  try {
-      reviews.value = await store.takeMovieDetailReview(props.movieInfo.id)
-  } catch (error) {
-      console.error('Failed to load reviews:', error);
-  }
-};
-
-const addReview = (review) => {
-  reviews.value.push(review);
-};
+// const addReview = (review) => {
+//   reviews.value.push(review);
+// };
 
 onMounted(() => {
-  loadMovieDetail();
-  loadReviews();
+  store.takeMovieDetail(route.params.moviePk);
+  store.takeMovieDetailReview(route.params.moviePk);
+  store.getUserInfo()
 });
 
 </script>

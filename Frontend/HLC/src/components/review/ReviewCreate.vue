@@ -4,7 +4,7 @@
       
       <div>
         <!-- 별점 선택 form -->
-        <form name="myform" id="myform" @submit.prevent="handleSubmit">
+        <form name="myform" id="myform" @submit.prevent="submitReview" ref="formElem">
           <fieldset>
             <input type="radio" name="rating" value="5" id="rate1" v-model="rate" /><label for="rate1">⭐</label>
             <input type="radio" name="rating" value="4" id="rate2" v-model="rate" /><label for="rate2">⭐</label>
@@ -43,41 +43,57 @@ const props = defineProps({
   }
 });
 
-const emit = defineEmits(['reviewSubmitted']);
+// const emit = defineEmits(['reviewSubmitted']);
 
-const rate = ref(null)
+const rate = ref('')
 const content = ref('')
 const store = useMovieStore()
+const formElem = ref(null)
 
-const handleSubmit = async () => {
-  try {
-    const response = await axios({
-      method: 'post',
-      url: `${store.API_URL}/api/v1/movies/${props.movie.id}/reviews/`,
-      headers: {
-        Authorization: `Token ${store.token}`,
-      },
-      data: {
-        rate: rate.value,
-        content: content.value
-      }
-    })
-    // 서버 응답에 따른 처리
-    console.log(response.data);
-    alert('리뷰가 성공적으로 제출되었습니다.');
-
-    // 받은 응답을 emit로 부모에게 넘기고 부모가 추가된 review를 reviews에 저장시킴
-    emit('reviewSubmitted', response.data);
-
-    // 입력 필드 초기화 <== 이 부분은 이제 리뷰가 작성되어있습니다가 되야하는데.. 일단 이렇게 작성
-    rate.value = null;
-    content.value = '';
-
-  } catch (error) {
-    console.error('There was an error!', error);
-    alert('리뷰를 제출하는 도중 오류가 발생했습니다. 다시 시도해주세요.');
-  }
+const findUserReviewIndex = () => {
+  return store.detailReviews.findIndex(review => {
+    return review.user.id === store.userId
+  });
 };
+// const createReview = () => {
+//   if (!rate.value || !content.value) {
+//     alert('Rate and content are required');
+//     return;
+//   }
+//   store.createReview(rate.value, content.value).then(() => {
+//     if (formElem.value) {
+//       formElem.value.reset();
+//     }
+//     rate.value = '';
+//     content.value = '';
+//   }).catch(error => {
+//     console.error('There was an error!', error);
+//     alert('리뷰를 제출하는 도중 오류가 발생했습니다. 다시 시도해주세요.');
+//   });
+// };
+
+const submitReview = async () => {
+  if (!rate.value || !content.value) {
+    alert('평점과 리뷰 내용을 작성해주세요');
+    return;
+  }
+
+  const reviewIndex = findUserReviewIndex();
+  const reviewId = reviewIndex !== -1 ? store.detailReviews[reviewIndex].id : -1
+
+
+  store.createOrUpdateReview(reviewId, rate.value, content.value).then(() => {
+    if (formElem.value) {
+      formElem.value.reset();
+    }
+    rate.value = '';
+    content.value = '';
+  }).catch(error => {
+    console.error('There was an error!', error);
+    alert('리뷰를 제출하는 도중 오류가 발생했습니다. 다시 시도해주세요.')
+  });
+};
+
 
 </script>
 
