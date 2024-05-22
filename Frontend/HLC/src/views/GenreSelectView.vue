@@ -79,26 +79,26 @@ onMounted(() => {
 });
 
 
-// 장르를 제출하는 함수
-const submitGenres = () => {
+const submitGenres = async () => {
   // 선택된 장르를 배열로 변환하여 사용
   const selectedGenresArray = Array.from(selectedGenres.value);
-  // 선택된 장르에 대한 axios 수행
-  for (const genre of selectedGenresArray) {
-    axios({
-      method: 'post',
-      url: `${store.API_URL}/api/v1/genres/${genre}/like/`,
-      headers: {
-        Authorization: `Token ${store.token}`
-      }
-    })
-      .then(res => {
-        console.log(res.data)
-        router.push({ name: 'home' })
+  
+  try {
+    // 모든 장르에 대한 axios 요청을 보내는 Promise들의 배열
+    const requests = selectedGenresArray.map(genre =>
+      axios.post(`${store.API_URL}/api/v1/genres/${genre}/like/`, null, {
+        headers: { Authorization: `Token ${store.token}` }
       })
-      .catch(err => console.log(err))
-  }
+    );
 
+    // 모든 요청이 완료될 때까지 기다림
+    await Promise.all(requests);
+
+    // 모든 요청이 완료되면 홈 화면으로 이동
+    router.push({ name: 'home', params: { selectedGenres: selectedGenresArray } });
+  } catch (error) {
+    console.error('장르 선택 요청 실패:', error);
+  }
 };
 </script>
 
@@ -116,8 +116,8 @@ const submitGenres = () => {
   align-items: center;
   justify-content: center;
   padding: 15rem;
-  color: white;
-  height: 100%;
+  color: rgb(255, 255, 255);
+  height: 100vh;
 }
 
 .cards {

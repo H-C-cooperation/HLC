@@ -1,42 +1,41 @@
 <template>
-  <h1>홈</h1>
-  <HomeCarouel 
-    v-for="genre in genres"
-    :key="genre.id"
-    :genre="genre"
-  />
+  <div class="main m-5">
+    <HomeCarousel 
+      v-for="genre in genres"
+      :key="genre"
+      :genre="genre"
+    />
+  </div>
 </template>
 
 <script setup>
 import { useMovieStore } from '@/stores/movie'
-import { Swiper, SwiperSlide } from 'swiper/vue'
 import { ref, onMounted } from 'vue';
-import HomeCarouel from '@/components/movie/homecarousel/HomeCarousel.vue'
+import HomeCarousel from '@/components/movie/homecarousel/HomeCarousel.vue'
 import axios from 'axios';
 
 const store = useMovieStore()
 const genres = ref([])
 
-const getGenres = function () {
-  axios({
-    method: 'get',
-    url: `${store.API_URL}/accounts/${store.userId}/`,
-    headers: {
-      Authorization: `Token ${store.token}`
-    }
-  })
-    .then(res => {
-      for (const obj of res.data.like_genres) {
-        genres.value.push(obj.name)
+const getGenres = async function () {
+  try {
+    const res = await axios({
+      method: 'get',
+      url: `${store.API_URL}/accounts/${store.userId}/`,
+      headers: {
+        Authorization: `Token ${store.token}`
       }
-      console.log(genres)
     })
-    .catch(err => console.log(err))
+    genres.value = res.data.like_genres.map(obj => obj.name)
+    console.log(genres.value)
+  } catch (err) {
+    console.log(err)
+  }
 }
 
-onMounted(() => {
-  store.getUserInfo()
-  getGenres()
+onMounted(async () => {
+  await store.getUserInfo()
+  await getGenres()
 })
 </script>
 

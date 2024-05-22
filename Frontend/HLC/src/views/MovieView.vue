@@ -1,7 +1,7 @@
 <template>
   <div class="m-5">
     <div class="m-3 text-center">
-      <h1 class="m-3">⭐Top10 영화들⭐</h1>
+      <h1 class="m-5">⭐Top10 영화들⭐</h1>
       <MainCarousel />
     </div>
     <div class="sub-carousel">

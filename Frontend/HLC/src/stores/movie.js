@@ -11,7 +11,6 @@ export const useMovieStore = defineStore('movie', () => {
   const userId = ref(0)
   const userInfo = ref({})
   const isSignUp = ref(false)
-  const genreMovies = ref([])
 
   const genres = ref([
       "액션",
@@ -56,24 +55,23 @@ export const useMovieStore = defineStore('movie', () => {
 
   const getMoviesByGenre = async function (genre) {
     try {
-      axios({
+      const response = await axios({
         method: 'get',
         url: `${API_URL}/api/v1/movies/`,
-        headers: {
-          Authorization: `Token ${token.value}`
-        },
         params: {
           mode: 'genre',
-          inputGenre: genre
-        }
-      })
-      genreMovies.value = res.data
+          inputGenre: `${genre}`
+        },
+        headers: {
+          Authorization: `Token ${token.value}`,
+        },
+      });
+      return response.data;
     } catch (error) {
       console.error(error);
       throw error;
     }
   };
-
 
   const signUp = function (payload) {
     const { username, password1, password2 } = payload

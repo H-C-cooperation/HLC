@@ -1,8 +1,9 @@
 <template>
   <Carousel 
     :itemsToShow="items" 
-    :wrapAround="true" 
+    :wrapAround="false" 
     :transition="500"
+    snapAlign="center"
     navigationNextLabel=""
     navigationPrevLabel=""
   >
@@ -13,7 +14,6 @@
         @mouseover="showInfo(movie.id)"
         @mouseleave="hideInfo(movie.id)"
       >
-        <div class="blank"></div>
         <img class="carousel__item" :src="`https://image.tmdb.org/t/p/w200/${movie.poster_path}`" :alt="movie.title"/>
         <h5 class="text-white mt-5">{{ movie.title }}</h5>
         <div class="card-body">
@@ -31,7 +31,6 @@
             <a href="#" class="btn bg-danger bg-opacity-75 text-white">자세히 보기</a>
           </div>
         </div>
-        <div class="blank"></div>
       </div>
     </Slide>
 
