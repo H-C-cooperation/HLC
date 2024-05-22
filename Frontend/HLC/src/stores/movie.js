@@ -98,7 +98,7 @@ export const useMovieStore = defineStore('movie', () => {
     }
   })
 
-  const getFavMoview = function() {
+  const getFavMovie = function() {
     axios ({
       method: 'get',
       url: `${API_URL}/accounts/user/`,
@@ -163,5 +163,5 @@ export const useMovieStore = defineStore('movie', () => {
   };
   
 
-  return { movies, API_URL, getMovies, signUp, logIn, token, isLogin, genres, takeMovieDetail, takeMovieDetailReview, getFavMoview, userId, userInfo }
+  return { movies, API_URL, getMovies, signUp, logIn, token, isLogin, genres, takeMovieDetail, takeMovieDetailReview, getFavMovie, userId, userInfo }
 }, { persist: true })

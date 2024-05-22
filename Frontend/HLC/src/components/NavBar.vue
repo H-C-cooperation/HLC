@@ -20,11 +20,12 @@
             >영화</RouterLink>
           </li>
           <li class="nav-item mx-1">
-            <div class="favorites text-center">
+            <div class="favorites text-center d-flex justify-content-center align-items-center">
               <RouterLink 
-              class="nav-link text-black"
-              :to="{ name: 'favorite' }"
-              >찜</RouterLink>    
+                class="nav-link text-black"
+                :to="{ name: 'favorite' }"
+              >찜</RouterLink>   
+              <span class="nav-link text-black">{{ store.userInfo.like_movies.length }}</span>
             </div>
           </li>
         </ul>
@@ -58,6 +59,7 @@ import { RouterLink, RouterView } from 'vue-router';
 import { useRouter } from 'vue-router';
 import { useMovieStore } from '@/stores/movie';
 import axios from 'axios';
+import { onMounted } from 'vue';
 
 const router = useRouter()
 const store = useMovieStore()
@@ -81,6 +83,10 @@ const logOut = function () {
     })
     .catch(err => console.log(err))
 }
+
+onMounted(() => {
+  store.getFavMovie()
+})
 </script>
 
 <style scoped>
