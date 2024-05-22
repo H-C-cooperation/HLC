@@ -5,7 +5,7 @@ from movies.models import Movie, Review, Genre
 class UserProfileSerializer(serializers.ModelSerializer):
         class Meta:
             model = User
-            fields = ('username', 'image', )
+            fields = ('id', 'username', 'image', )
 
 class UserSerializer(serializers.ModelSerializer):
     class MovieProfileSerializer(serializers.ModelSerializer):
@@ -37,7 +37,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('username', 'followers','followings','like_movies', 'like_reviews', 'reviews', 'like_genres', 'image')
+        fields = ('id', 'username', 'followers','followings','like_movies', 'like_reviews', 'reviews', 'like_genres', 'image')
     
 
 # class SignupSerializer(serializers.ModelSerializer):
