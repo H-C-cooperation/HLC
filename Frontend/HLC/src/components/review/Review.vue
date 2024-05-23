@@ -1,12 +1,11 @@
 <template>
   <div class="d-flex align-items-center">
-    <div class="userimgname">
+    <div class="userimgname" @click="goProfile(review.user.id)">
       <!-- img src 리뷰쓴 유저이미지로 고치기( ) -->
       <img :src="review.user.image" alt="img" class="roundimg" /> 
       <p class="m-0">{{ review.user.username }}</p>
     </div>
     <div style="width: 160px">
-      {{ review.rate }}
       <!-- for 문으로 이 유저가 준 별점만큼 바로 아래의 span태그를 반복하기 -->
       <template v-if="review.rate > 0">
         <span class="redstar" v-for="n in review.rate">⭐</span>
@@ -28,7 +27,7 @@
       <!-- 하트 누를 때마다 좋아요 했다안했다되고 색깔도 바뀌도록( ) -->
       <span style="font-size: 13px">{{ review.like_users.length }}</span>
 
-      <button @click="store.deleteReview(review.id)" v-if="store.userId === review.user.id">Delete</button>
+      <button @click="movieStore.deleteReview(review.id)" v-if="accountStore.userId === review.user.id">Delete</button>
 
     </div>
   </div>
@@ -38,12 +37,17 @@
 <script setup>
 import { computed, onMounted } from 'vue';
 import { useMovieStore } from '@/stores/movie';
+import { useAccountStore } from '@/stores/account';
+import { useRouter } from 'vue-router';
+
 import axios from 'axios';
 
-const store = useMovieStore()
+const router = useRouter()
+const movieStore = useMovieStore()
+const accountStore = useAccountStore()
 
 onMounted(() => {
-  store.getUserInfo()
+  accountStore.getUserInfo()
 });
 
 const props = defineProps({
@@ -51,16 +55,16 @@ const props = defineProps({
 })
 
 const isLiked = computed(() => {
-  return props.review.like_users.includes(store.userId);
+  return props.review.like_users.includes(accountStore.userId);
 });
 
 const toggleLike = async () => {
   try {
     const response = await axios({
       method: 'post',
-      url: `${store.API_URL}/api/v1/reviews/${props.review.id}/like/`,
+      url: `${movieStore.API_URL}/api/v1/reviews/${props.review.id}/like/`,
       headers: {
-        Authorization: `Token ${store.token}`,
+        Authorization: `Token ${accountStore.token}`,
       },
       
     })
@@ -74,9 +78,17 @@ const toggleLike = async () => {
   }
 };
 
+const goProfile = (userId) => {
+  router.push({ name: 'profile', params:{userPk:userId}})
+}
 
 </script>
 
 <style scoped>
+.userimgname:hover {
+  background-color: rgba(255, 255, 255, 0.1); /* 호버 시 배경색 변경 */
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); /* 그림자 효과 추가 */
+  cursor: pointer; /* 커서를 손가락 모양으로 변경하여 클릭 가능함을 강조 */
+}
 
 </style>

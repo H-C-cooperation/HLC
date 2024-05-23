@@ -14,8 +14,8 @@
 
             <div class="userimgname">
               <!-- 내사진으로 img src 바꾸기 -->
-              <img :src="store.userInfo.image" alt="img" class="roundimg" />
-              <p class="m-0">{{store.userInfo.username}}</p>
+              <img :src="accountStore.userInfo.image" alt="img" class="roundimg" />
+              <p class="m-0">{{accountStore.userInfo.username}}</p>
             </div>
           </fieldset>
 
@@ -31,8 +31,9 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useMovieStore } from '@/stores/movie';
+import { useAccountStore } from '@/stores/account';
 import axios from 'axios';
 import { defineProps } from 'vue';  // defineProps 사용하기
 
@@ -47,30 +48,19 @@ const props = defineProps({
 
 const rate = ref('')
 const content = ref('')
-const store = useMovieStore()
+const movieStore = useMovieStore()
+const accountStore = useAccountStore()
 const formElem = ref(null)
 
 const findUserReviewIndex = () => {
-  return store.detailReviews.findIndex(review => {
-    return review.user.id === store.userId
+  return movieStore.detailReviews.findIndex(review => {
+    return review.user.id === accountStore.userId
   });
 };
-// const createReview = () => {
-//   if (!rate.value || !content.value) {
-//     alert('Rate and content are required');
-//     return;
-//   }
-//   store.createReview(rate.value, content.value).then(() => {
-//     if (formElem.value) {
-//       formElem.value.reset();
-//     }
-//     rate.value = '';
-//     content.value = '';
-//   }).catch(error => {
-//     console.error('There was an error!', error);
-//     alert('리뷰를 제출하는 도중 오류가 발생했습니다. 다시 시도해주세요.');
-//   });
-// };
+
+// const isReviewCheck = computed(() => {
+//   return findUserReviewIndex() !== -1;
+// });
 
 const submitReview = async () => {
   if (!rate.value || !content.value) {
@@ -79,10 +69,10 @@ const submitReview = async () => {
   }
 
   const reviewIndex = findUserReviewIndex();
-  const reviewId = reviewIndex !== -1 ? store.detailReviews[reviewIndex].id : -1
+  const reviewId = reviewIndex !== -1 ? movieStore.detailReviews[reviewIndex].id : -1
 
 
-  store.createOrUpdateReview(reviewId, rate.value, content.value).then(() => {
+  movieStore.createOrUpdateReview(reviewId, rate.value, content.value).then(() => {
     if (formElem.value) {
       formElem.value.reset();
     }

@@ -1,7 +1,7 @@
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .serializers import UserSerializer
+from .serializers import UserSerializer, UserProfileSerializer
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import get_user_model
 from django.http.response import JsonResponse
@@ -34,8 +34,10 @@ def follow(request, user_pk):
     if person != user:
         if person.followers.filter(pk=user.pk).exists():
             person.followers.remove(user)
-            is_followed = False
         else:
             person.followers.add(user)
-            is_followed = True
-        return Response(is_followed)
+        # person 를 UserProfileSerializer 사용하여 응답
+        response_serializer = UserSerializer(person)   
+
+        return Response(response_serializer.data)
+    
