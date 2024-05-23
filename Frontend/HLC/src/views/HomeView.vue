@@ -1,10 +1,12 @@
 <template>
-  <div v-if="genres.length > 0" class="main m-5">
-    <HomeCarousel 
-      v-for="genre in genres"
-      :key="genre"
-      :genre="genre"
-    />
+  <div class="m-5">
+    <div v-if="genres.length > 0" class="main">
+      <GenreCarousel 
+        v-for="genre in genres"
+        :key="genre"
+        :genre="genre"
+      />
+    </div>
   </div>
 </template>
 
@@ -12,7 +14,8 @@
 import { useMovieStore } from '@/stores/movie'
 import { useAccountStore } from '@/stores/account';
 import { ref, onMounted } from 'vue';
-import HomeCarousel from '@/components/movie/homecarousel/HomeCarousel.vue'
+import GenreCarousel from '@/components/movie/homecarousel/GenreCarousel.vue'
+import AlgorithmCarousel from '@/components/movie/homecarousel/AlgorithmCarousel.vue';
 import axios from 'axios';
 
 const movieStore = useMovieStore()

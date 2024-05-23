@@ -23,6 +23,15 @@
       <h3>가족과 함께 👨‍👩‍👧‍👦</h3>
       <hr style="border: solid 2px #fff;">
       <SubCarousel6 class="mb-5"/>
+      <h3>스낵처럼 짧은 영화를 원하시나요? 🥨</h3>
+      <hr style="border: solid 2px #fff;">
+      <ShortCarousel />
+      <h3>적당한 시간이 있으시다면... 🍳</h3>
+      <hr style="border: solid 2px #fff;">
+      <MiddleCarousel />
+      <h3>영화를 음미할 줄 아는 분이라면..! 🥂</h3>
+      <hr style="border: solid 2px #fff;">
+      <LongCarousel />
     </div>
   </div>
 </template>
@@ -35,6 +44,9 @@ import SubCarousel3 from '@/components/movie/moviecarousel/SubCarousel3.vue'
 import SubCarousel4 from '@/components/movie/moviecarousel/SubCarousel4.vue'
 import SubCarousel5 from '@/components/movie/moviecarousel/SubCarousel5.vue'
 import SubCarousel6 from '@/components/movie/moviecarousel/SubCarousel6.vue'
+import ShortCarousel from '@/components/movie/moviecarousel/ShortCarousel.vue'
+import MiddleCarousel from '@/components/movie/moviecarousel/MiddleCarousel.vue'
+import LongCarousel from '@/components/movie/moviecarousel/LongCarousel.vue'
 </script>
 
 <style scoped>

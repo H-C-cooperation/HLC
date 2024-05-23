@@ -1,25 +1,27 @@
 <template>
-  <div class="container m-5">
-    <h1 class="my-5 do-hyeon-regular">{{ keyword }} 에 대한 검색 결과</h1>
-    <div v-if="movies.length > 0">
-        <div class="row row-cols-2 row-cols-md-4 row-cols-xl-8 g-4">
-          <div v-for="movie in movies" :key="movie.id" class="col">
-            <div class="card bg-black text-white text-center m-3">
-              <div v-if="movie.poster_path">
-                <img :src="`https://image.tmdb.org/t/p/w200/${movie.poster_path}`" height="300px">
-              </div>
-              <div v-else>
-                <img src="@/icons/No-Image.png" alt="" class="object-fit-cover" width="200px" height="300px">
-              </div>
-              <h5 class="mt-3">{{ movie.title }}</h5>
+  <h1 class="m-5 do-hyeon-regular">{{ keyword }} 에 대한 검색 결과</h1>
+  <div v-if="movies.length > 0">
+    <div class="container">
+      <div class="row row-cols-2 row-cols-md-4 row-cols-lg-5 g-4">
+        <div v-for="movie in movies" :key="movie.id" class="col">
+          <div class="card bg-black text-white text-center m-3">
+            <div v-if="movie.poster_path">
+              <img :src="`https://image.tmdb.org/t/p/w200/${movie.poster_path}`" height="300px">
             </div>
+            <div v-else>
+              <img src="@/icons/No-Image.png" alt="" class="object-fit-cover" width="200px" height="300px">
+            </div>
+            <h5 class="mt-3">{{ movie.title }}</h5>
           </div>
         </div>
       </div>
-      <div v-else class="text-center">
-        <h2 data-shadow='webs!'>Oops!</h2>
-        <h3 class="mt-5">검색결과가 없습니다..!</h3>
-      </div>
+    </div>
+  </div>
+  <div v-else class="no-results">
+    <div class="text-center">
+      <h2 data-shadow='webs!'>Oops!</h2>
+      <h3 class="mt-5">검색결과가 없습니다..!</h3>
+    </div>
   </div>
 </template>
 
@@ -98,7 +100,7 @@ body {
 
 h2 {
   display: inline-block;
-  color: white;
+  color: rgb(194, 194, 194);
   font-family: 'Righteous', serif;
   font-size: 12em; 
   text-shadow: .03em .03em 0 hsla(230,40%,50%,1);
@@ -133,5 +135,13 @@ h2 {
   font-family: "Do Hyeon", sans-serif;
   font-weight: 400;
   font-style: normal;
+}
+
+.no-results {
+  height: 50vh;
+}
+
+.container {
+  width: 80%;
 }
 </style>

@@ -31,7 +31,7 @@
           </li>
         </ul>
         <form class="d-flex" role="search" @submit.prevent="search">
-          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" :value="inputText" @input="onInput">
+          <input id="input" class="form-control me-2" type="search" placeholder="Search" aria-label="Search" onfocus="this.placeholder=''" onblur="this.placeholder='Search'" :value="inputText" @input="onInput">
           <button class="btn" type="submit">
             <img src="@/icons/search.png" alt="search" width="30" height="30">
           </button>
@@ -80,11 +80,11 @@ const logOut = function () {
       Authorization: `Token ${accountStore.token}`
     }
   })
-    .then(res => {
-      router.push({ name: 'login' })
-      accountStore.token = null
-    })
-    .catch(err => console.log(err))
+  .then(res => {
+    router.push({ name: 'login' })
+    accountStore.token = null
+  })
+  .catch(err => console.log(err))
 }
 
 const inputText = ref('')
@@ -96,6 +96,7 @@ const search = function () {
   const keyword = inputText.value
   if (keyword) {
     router.push({ name: 'search', params: { keyword } })
+    inputText.value = null
   }
 }
 

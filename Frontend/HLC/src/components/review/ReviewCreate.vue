@@ -20,8 +20,10 @@
           </fieldset>
 
           <!-- 리뷰 작성 텍스트 에어리어 -->
-          <textarea name="myreview" id="myreview" cols="69" rows="4" class="mb-1" v-model="content"></textarea>  
-          <input type="submit" value="작성" style="width: 80px; height: 28px" />
+          <div class="d-flex flex-column">
+            <textarea name="myreview" id="myreview" cols="69" rows="4" class="mb-1" v-model="content"></textarea>  
+            <input type="submit" value="작성" style="width: 20%;" class="btn btn-danger mt-2" />
+          </div>
 
         </form>
       </div>

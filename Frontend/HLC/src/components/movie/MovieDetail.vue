@@ -1,32 +1,44 @@
 <template>
-  <div v-if="movieStore.detailMovie" class="outer bg-black">
-    <div>
+  <div v-if="movieStore.detailMovie" class="outer bg-black noto-sans-kr">
+    <div class="border-top border-bottom border-danger border-opacity-50 border-4 p-5 bg-dark rounded">
       <div class="cards videobox mb-3">
         <iframe v-if="movieStore.detailMovie.youtube_url" :src="movieStore.detailMovie.youtube_url" frameborder="0" width="100%" height="100%"></iframe>
       </div>
-      <div class="cards d-flex mb-3">
-        
-        <div class="infobox title">
-          <div class="d-flex hearts">
-            <!-- if 내가 좋아요 했다면 빨간하트 ( )-->
-            <span class="redheart" v-if="isLiked" @click="toggleLike">❤️</span>
-            <!-- else 하얀하트 ( ) -->
-            <span class="whiteheart" v-else @click="toggleLike">❤️</span>
-            <!-- 하트 누를 때마다 좋아요 했다안했다되고 색깔도 바뀌도록( ) -->
-            <span style="font-size: 13px">{{ movieStore.detailMovie && movieStore.detailMovie.like_users ? movieStore.detailMovie.like_users.length : 0 }}</span>
-
-          </div>
+      <div class="my-3 p-2">
+        <h1 class="text-danger text-opacity-75 fw-bold underline mb-3">Title</h1>
+        <div class="infobox title d-flex justify-content-around">
           <span>
             {{ movieStore.detailMovie.title }}
           </span>
+          <div class=" hearts">
+            <!-- if 내가 좋아요 했다면 빨간하트 ( )-->
+            <div v-if="isLiked" class="text-center">
+              <p class="redheart fs-1 mb-0" @click="toggleLike">❤️</p>
+              <p style="font-size: 13px" class="my-0">{{ movieStore.detailMovie && movieStore.detailMovie.like_users ? movieStore.detailMovie.like_users.length : 0 }}</p>
+            </div>
+            <!-- else 하얀하트 ( ) -->
+            <div v-else class="text-center">
+              <p class="whiteheart fs-1 mb-0" @click="toggleLike">❤️</p>
+              <p style="font-size: 13px" class="my-0">{{ movieStore.detailMovie && movieStore.detailMovie.like_users ? movieStore.detailMovie.like_users.length : 0 }}</p>
+            </div>
+            <!-- 하트 누를 때마다 좋아요 했다안했다되고 색깔도 바뀌도록( ) -->
+          </div>
         </div>
-        <div class="infobox cast">{{ movieStore.detailMovie.actors && movieStore.detailMovie.actors.length > 0 ? movieStore.detailMovie.actors[0].name : 'Unknown' }}</div>
       </div>
-      <div class="cards summarybox mb-3 scrollbar">{{ movieStore.detailMovie.overview }}</div>
 
-      <div class="cards reviewbox mb-3 scrollbar" v-if="detailReviews && detailReviews.length > 0">
-          <Review v-for="review in detailReviews" :key="review.id" :review="review"></Review>
+      <div>
+        <h1 class="text-danger text-opacity-75 fw-bold underline mb-3">Overview</h1>
+        <div class="cards summarybox mb-3">{{ movieStore.detailMovie.overview }}</div>
       </div>
+
+      <h1 class="text-danger text-opacity-75 fw-bold underline mb-3">Review</h1>
+      <div class="cards reviewbox mb-3 scrollbar" v-if="detailReviews && detailReviews.length > 0">
+        <Review v-for="review in detailReviews" :key="review.id" :review="review"></Review>
+      </div>
+      <div v-else>
+        <h3 class="my-5 text-center p-5">아직 리뷰가 없습니다..! 😐</h3>
+      </div>
+      <h1 class="text-danger text-opacity-75 fw-bold underline mb-3">Make Your Own</h1>
       <div class="cards createreviewbox">
           <ReviewCreate v-if="movieStore.detailMovie" :movie="movieStore.detailMovie"></ReviewCreate>
       </div>
@@ -102,6 +114,8 @@ watch(
 </script>
 
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Noto+Sans+KR:wght@100..900&display=swap');
+
 .scrollbar::-webkit-scrollbar {
   display: none;
 }
@@ -116,23 +130,24 @@ watch(
 }
 
 .cards {
-  width: 40rem;
+  width: 50rem;
 }
 /* 유튜브 영상 div */
 .videobox {
-  height: 20rem;
+  height: 30rem;
   border-radius: 15px 15px 0px 0px;
   background-color: rgb(231, 227, 227);
   color: black;
 }
 /* 영화제목, 출연진 div */
 .infobox {
-  border: solid white 2px;
+  width: 100%;
+  border: solid wite 2px;
   height: 5rem;
 }
 /* 영화제목 박스 글자스타일 */
 .title {
-  width: 27rem;
+  width: 100%;
   font-size: 30px;
   font-weight: bold;
   display: flex;
@@ -151,25 +166,21 @@ watch(
 }
 /* 영화 줄거리 div */
 .summarybox {
-  border: solid white 2px;
-  height: 10rem;
-  padding: 15px;
+  padding: 20px 10px;
+  font-size: 18px;
   font-weight: bold;
   letter-spacing: 1px;
   line-height: 150%;
-  overflow-y: scroll;
 }
 
 /* 리뷰 div */
 .reviewbox {
-  border: solid white 2px;
   height: 20rem;
   padding: 15px 30px;
   overflow-y: scroll;
 }
 /* 리뷰 작성 div */
 .createreviewbox {
-  border: solid white 2px;
   border-radius: 0px 0px 15px 15px;
   height: 15rem;
   padding: 15px 30px;
@@ -218,6 +229,18 @@ watch(
   font-size: 1.3em; /* 이모지 크기 */
   color: transparent; /* 기존 이모지 컬러 제거 */
   text-shadow: 0 0 0 #f0f0f0;
+}
+
+.underline {
+  text-decoration: underline;
+  text-underline-offset: 15px;
+}
+
+.noto-sans-kr {
+  font-family: "Noto Sans KR", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 200;
+  font-style: normal;
 }
 
 /* 별점 선택 */
