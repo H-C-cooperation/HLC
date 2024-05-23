@@ -13,7 +13,8 @@
             <!-- else 하얀하트 ( ) -->
             <span class="whiteheart" v-else @click="toggleLike">❤️</span>
             <!-- 하트 누를 때마다 좋아요 했다안했다되고 색깔도 바뀌도록( ) -->
-            <span style="font-size: 13px">{{ movieStore.detailMovie.like_users.length }}</span>
+            <span style="font-size: 13px">{{ movieStore.detailMovie && movieStore.detailMovie.like_users ? movieStore.detailMovie.like_users.length : 0 }}</span>
+
           </div>
           <span>
             {{ movieStore.detailMovie.title }}
@@ -36,8 +37,8 @@
 <script setup>
 import Review from '@/components/review/Review.vue';
 import ReviewCreate from '@/components/review/ReviewCreate.vue';
-import { ref, onMounted, computed } from 'vue';
-import { useRoute } from 'vue-router';
+import { ref, onMounted, computed, watch } from 'vue';
+import { onBeforeRouteLeave, useRoute } from 'vue-router';
 import { storeToRefs } from 'pinia';
 import { useMovieStore } from '@/stores/movie';
 import { useAccountStore } from '@/stores/account';
@@ -49,8 +50,12 @@ const accountStore = useAccountStore()
 const {detailReviews} = storeToRefs(movieStore)
 
 const isLiked = computed(() => {
-  return movieStore.detailMovie.like_users.includes(accountStore.userId);
+  if (movieStore.detailMovie && movieStore.detailMovie.like_users) {
+    return movieStore.detailMovie.like_users.includes(accountStore.userId);
+  }
+  return false;
 });
+
 
 const toggleLike = async () => {
   try {
@@ -78,6 +83,21 @@ onMounted(() => {
   movieStore.takeMovieDetailReview(route.params.moviePk);
   accountStore.getUserInfo();
 });
+
+onBeforeRouteLeave((to, from) => {
+  movieStore.detailMovie.value = null
+  movieStore.detailReviews.values = null
+})
+
+watch(
+  () => route.params.moviePk,
+  (newMoviePk, oldMoviePk) => {
+    if (newMoviePk !== oldMoviePk) {
+      movieStore.takeMovieDetail(route.params.moviePk);
+      movieStore.takeMovieDetailReview(route.params.moviePk);
+    }
+  }
+);
 
 </script>
 
