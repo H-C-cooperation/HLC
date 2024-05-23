@@ -2,11 +2,8 @@
   <div class="outer bg-black" v-if="targetInfo">
     <div class="outline">
       <header>
-        {{ accountStore.userInfo }} 
-        <hr>
-        {{ targetInfo }}
         <!-- 1. v-if 내프로필이라면 ( ) -->
-        <h1 v-if="isMyProfile">{{accountStore.userInfo.username}} 님의 프로필 수정</h1>
+        <h1 v-if="isMyProfile">{{staticUserName}} 님의 프로필 수정</h1>
         <!-- 2. v-if 다른사람 프로필이라면 ( ) -->
         <h1 v-else><!--다른사람이름--> {{ targetInfo.username }} 님의 프로필</h1>
 
@@ -18,6 +15,7 @@
           <!-- 내프로필 이미지로 img src 고쳐야함 ( ) -->
           <img :src="accountStore.userInfo.image" alt="my img" class="m-3" />
           <div class="inputbox d-flex flex-column">
+            <input type="file" @change="onFileChange" class="inputbox bg-secondary-subtle m-2"/>
               <input
                 type="text"
                 placeholder="유저 이름"
@@ -101,11 +99,11 @@
           </div>
         </article>
       </main>
-      <nav>
+      <nav v-if="isMyProfile">
         <hr />
         <!-- save, cancel 버튼 연결 -->
-        <button class="me-3">SAVE</button>
-        <button class="cancelbtn">CANCEL</button>
+        <button class="me-3" @click="saveProfile">SAVE</button>
+        <button class="cancelbtn" @click="cancelEdit">CANCEL</button>
       </nav>
     </div>
   </div>
@@ -123,11 +121,75 @@ const accountStore = useAccountStore()
 const route = useRoute()
 const targetInfo = ref([])
 const isMyProfile = ref(false)
+const staticUserName = accountStore.userInfo.username
+
+// 이미지 업로드
+const image = ref(null);
+const imageUrl = computed(() => accountStore.userInfo.image);
+
 
 const isFollowing = computed(() => {
   const followers = targetInfo.value.followers || [];
   return followers.some(follower => follower.id === accountStore.userId);
 });
+
+const onFileChange = (e) => {
+  const file = e.target.files[0];
+  image.value = file;
+  accountStore.userInfo.image = URL.createObjectURL(file);
+};
+
+const uploadImage = async () => {
+  if (!image.value) {
+    alert('이미지를 먼저 선택해 주세요.');
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append('image', image.value);
+
+  try {
+    const response = await axios.post(`${accountStore.API_URL}/accounts/profile/${accountStore.userInfo.id}/upload_image/`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        Authorization: `Token ${accountStore.token}`,
+      },
+    });
+    accountStore.userInfo.image = response.data.image;
+  } catch (error) {
+    console.error('Error uploading image:', error);
+  }
+};
+
+const saveProfile = async () => {
+  if (image.value) {
+    await uploadImage();
+  }
+  try {
+    const { username, email } = accountStore.userInfo;
+    const response = await axios.put(
+      `${accountStore.API_URL}/accounts/${accountStore.userInfo.id}/`,
+      { username, email }, // 필요한 정보만 전송
+      {
+        headers: {
+          Authorization: `Token ${accountStore.token}`,
+        },
+      }
+    );
+    console.log('Profile updated:', response.data);
+    window.location.reload()
+  } catch (error) {
+    console.error('Error updating profile:', error);
+  }
+};
+
+const cancelEdit = () => {
+  // 편집 취소 로직 (필요한 경우 추가)
+  window.location.reload()
+
+};
+
+
 
 const toggleFollow = async () => {
   try {
