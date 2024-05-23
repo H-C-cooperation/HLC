@@ -85,22 +85,21 @@ onMounted(() => {
 const submitGenres = async () => {
   // 선택된 장르를 배열로 변환하여 사용
   const selectedGenresArray = Array.from(selectedGenres.value);
+  // 스토어에 장르들 저장
+  accountStore.favGenres = selectedGenresArray
   
-  try {
-    // 모든 장르에 대한 axios 요청을 보내는 Promise들의 배열
-    const requests = selectedGenresArray.map(genre =>
-      axios.post(`${movieStore.API_URL}/api/v1/genres/${genre}/like/`, null, {
-        headers: { Authorization: `Token ${accountStore.token}` }
+  for (const genre of selectedGenresArray) {
+    axios({
+      method: 'post',
+      url: `${movieStore.API_URL}/api/v1/genres/${genre}/like/`,
+      headers: {
+        Authorization: `Token ${accountStore.token}`
+      }
+    })
+      .then(res => {
+        router.push({ name: 'home' })
       })
-    );
-
-    // 모든 요청이 완료될 때까지 기다림
-    await Promise.all(requests);
-
-    // 모든 요청이 완료되면 홈 화면으로 이동
-    router.push({ name: 'home', params: { selectedGenres: selectedGenresArray } });
-  } catch (error) {
-    console.error('장르 선택 요청 실패:', error);
+      .catch(err => console.log(err))
   }
 };
 </script>
