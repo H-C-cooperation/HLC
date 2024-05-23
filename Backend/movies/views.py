@@ -21,15 +21,30 @@ import json
 
 TMDB_API_KEY = 'd88c87eab4e60d92631748ce1dc8d7f5'
 YOUTUBE_API_KEY = 'AIzaSyAI-kpB7dla2r_o-i-tNYd-5Blgbta9hUg'
-# AIzaSyA3cQDQWcuogFV6t4oZrFXYR2ZfEOlvkpg
-# AIzaSyACxJj878xh9pNgnBhs1yW_Ar7vOd0R7F0
-def takeYoutubeUrl(movieTitle):
+
+def takeYoutubeUrl(movieTitle, movidId):
+
+    # 1. tmdb api 를 통해 받은 결과 값에 youtube 동영상이 있다면 해당 영상을 담기
+    url = f"https://api.themoviedb.org/3/movie/{movidId}/videos?api_key={TMDB_API_KEY}&language=ko-KR"
+    data = requests.get(url)
+    results = data.json().get('results')
+
+    if results != []:
+        for result in results:
+            if result['site'] == "YouTube" and result['key']:
+                youtube_url = f"https://www.youtube.com/embed/{result['key']}"
+                print(result['key'])
+                return youtube_url
+
+
+    #2. tmdb api 를 통해 받아온 비디오에 값이 없을 때는 Youtube api를 사용해 직접 겁색해 동영상을 넣어주자
     url = 'https://www.googleapis.com/youtube/v3/search'
     params = {
         'part': 'snippet',
         'key': YOUTUBE_API_KEY,
         'q': f"{movieTitle} 공식 예고편",
-        'type': 'video'
+        'order': 'relevance',  # 관련성 높은 영상을 얻기
+        'type': 'video',
     }
     response = requests.get(url, params=params)
     data = response.json()
@@ -72,7 +87,7 @@ def takeGenre():
 
 def takeMovie():
     cnt = 0
-    for i in range(5, 10):
+    for i in range(21, 25):
         # TMDB API를 사용하여 영화 데이터 (인기) 가져오기
         movieURL = f"https://api.themoviedb.org/3/movie/popular?api_key={TMDB_API_KEY}&language=ko-KR&page={i}"
         movieList = requests.get(movieURL)
@@ -95,7 +110,7 @@ def takeMovie():
                 continue
             
             # youtube 공식 예고편 링크 가져오기 (혹시라도 제목 없으면 에러 메시지 띄우기 위해 index 로 사용)
-            youtube_url = takeYoutubeUrl(resData['title'])
+            youtube_url = takeYoutubeUrl(resData['title'], tmp_id)
 
             # 공식 예고편을 찾을 수 없다면 없애 주기
             if youtube_url == '':
@@ -243,11 +258,11 @@ def movie_list(request):
     # 런타임 => TO DO
     elif mode == 'runtime':
         inputRuntime = request.GET.get('inputRuntime')
-        if inputRuntime == 'short': # runtime : 0 <= x < 1 시간
+        if inputRuntime == 'short': # runtime : 0 <= x < 1.5 시간
             movies = Movie.objects.filter(runtime__gt=0, runtime__lt=90).order_by('-popularity')[:30]
-        elif inputRuntime == 'medium': # runtime : 1 <= x < 2 시간
+        elif inputRuntime == 'medium': # runtime : 1 <= x < 2.5 시간 
             movies = Movie.objects.filter(runtime__gte=90, runtime__lt=150).order_by('-popularity')[:30]
-        elif inputRuntime == 'long': # runtime : 2시간 이상
+        elif inputRuntime == 'long': # runtime : 2시간 30분 이상
             movies = Movie.objects.filter(runtime__gte=150).order_by('-popularity')[:30]
 
     # 장르별 인기순

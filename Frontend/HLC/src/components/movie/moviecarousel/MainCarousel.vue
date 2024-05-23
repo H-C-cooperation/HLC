@@ -24,7 +24,7 @@
             <div class="text-container">
               <h2>TOP {{ movies.indexOf(movie) + 1 }}</h2>
               <p>{{ movie.title }}</p>
-              <button class="btn btn-danger mt-3">
+              <button class="btn btn-danger mt-3" @click="store.goToMovieDetail(movie.id)">
                 자세히 보기
               </button>
           </div>
