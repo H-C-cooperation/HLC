@@ -279,16 +279,12 @@ def movie_like(request, movie_pk):
 
     if movie.like_users.filter(pk=user.pk).exists():
         movie.like_users.remove(user)
-        liked = False
     else:
         movie.like_users.add(user)
-        liked =True
-    context ={
-        'liked' : liked,
-        'count' : movie.like_users.count(),
-    }
+    # 생성된 영화를 MovieDetailSerializer 사용하여 응답
+    response_serializer = MovieDetailSerializer(movie)   
 
-    return Response(context)
+    return Response(response_serializer.data)
 
 from django.db.models import Count
 # 해당 영화에 등록된 전체 리뷰 목록 제공 + 리뷰 생성

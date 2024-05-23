@@ -1,20 +1,33 @@
 <template>
-  <div v-if="store.detailMovie" class="outer bg-black">
+  <div v-if="movieStore.detailMovie" class="outer bg-black">
     <div>
       <div class="cards videobox mb-3">
-        <iframe v-if="store.detailMovie.youtube_url" :src="store.detailMovie.youtube_url" frameborder="0" width="100%" height="100%"></iframe>
+        <iframe v-if="movieStore.detailMovie.youtube_url" :src="movieStore.detailMovie.youtube_url" frameborder="0" width="100%" height="100%"></iframe>
       </div>
       <div class="cards d-flex mb-3">
-        <div class="infobox title">{{ store.detailMovie.title }}</div>
-        <div class="infobox cast">{{ store.detailMovie.actors && store.detailMovie.actors.length > 0 ? store.detailMovie.actors[0].name : 'Unknown' }}</div>
+        
+        <div class="infobox title">
+          <div class="d-flex hearts">
+            <!-- if 내가 좋아요 했다면 빨간하트 ( )-->
+            <span class="redheart" v-if="isLiked" @click="toggleLike">❤️</span>
+            <!-- else 하얀하트 ( ) -->
+            <span class="whiteheart" v-else @click="toggleLike">❤️</span>
+            <!-- 하트 누를 때마다 좋아요 했다안했다되고 색깔도 바뀌도록( ) -->
+            <span style="font-size: 13px">{{ movieStore.detailMovie.like_users.length }}</span>
+          </div>
+          <span>
+            {{ movieStore.detailMovie.title }}
+          </span>
+        </div>
+        <div class="infobox cast">{{ movieStore.detailMovie.actors && movieStore.detailMovie.actors.length > 0 ? movieStore.detailMovie.actors[0].name : 'Unknown' }}</div>
       </div>
-      <div class="cards summarybox mb-3 scrollbar">{{ store.detailMovie.overview }}</div>
+      <div class="cards summarybox mb-3 scrollbar">{{ movieStore.detailMovie.overview }}</div>
 
       <div class="cards reviewbox mb-3 scrollbar" v-if="detailReviews && detailReviews.length > 0">
           <Review v-for="review in detailReviews" :key="review.id" :review="review"></Review>
       </div>
       <div class="cards createreviewbox">
-          <ReviewCreate v-if="store.detailMovie" :movie="store.detailMovie"></ReviewCreate>
+          <ReviewCreate v-if="movieStore.detailMovie" :movie="movieStore.detailMovie"></ReviewCreate>
       </div>
     </div>
   </div>
@@ -23,43 +36,47 @@
 <script setup>
 import Review from '@/components/review/Review.vue';
 import ReviewCreate from '@/components/review/ReviewCreate.vue';
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import { storeToRefs } from 'pinia';
 import { useMovieStore } from '@/stores/movie';
+import { useAccountStore } from '@/stores/account';
 import axios from 'axios';
 
 const route = useRoute();
-const store = useMovieStore();
-const {detailReviews} = storeToRefs(store)
-// const props = defineProps({
-//   movieInfo:Object
-// })
+const movieStore = useMovieStore();
+const accountStore = useAccountStore()
+const {detailReviews} = storeToRefs(movieStore)
 
+const isLiked = computed(() => {
+  return movieStore.detailMovie.like_users.includes(accountStore.userId);
+});
 
-// const loadMovieDetail = async () => {
-//   try {
-//     movie.value = await store.takeMovieDetail(props.movieInfo.id);
-//   } catch (error) {
-//     console.error('Failed to load movie detail:', error);
-//   }
-// };
-// const loadReviews = async () => {
-//   try {
-//       reviews.value = await store.takeMovieDetailReview(props.movieInfo.id)
-//   } catch (error) {
-//       console.error('Failed to load reviews:', error);
-//   }
-// };
+const toggleLike = async () => {
+  try {
+    const response = await axios({
+      method: 'post',
+      url: `${movieStore.API_URL}/api/v1/movies/${movieStore.detailMovie.id}/like/`,
+      headers: {
+        Authorization: `Token ${accountStore.token}`,
+      },
+    })
+    // 서버 응답에 따라 like_users 업데이트
+    console.log(response.data)
 
-// const addReview = (review) => {
-//   reviews.value.push(review);
-// };
+    movieStore.detailMovie.like_users = response.data.like_users;
+    // console.log(response.data)
+
+  } catch (error) {
+    console.error('Failed to toggle like:', error);
+    alert('좋아요를 변경하는 도중 오류가 발생했습니다. 다시 시도해주세요.');
+  }
+};
 
 onMounted(() => {
-  store.takeMovieDetail(route.params.moviePk);
-  store.takeMovieDetailReview(route.params.moviePk);
-  store.getUserInfo()
+  movieStore.takeMovieDetail(route.params.moviePk);
+  movieStore.takeMovieDetailReview(route.params.moviePk);
+  accountStore.getUserInfo();
 });
 
 </script>
@@ -75,6 +92,7 @@ onMounted(() => {
   justify-content: center;
   padding: 70px;
   color: white;
+  
 }
 
 .cards {
