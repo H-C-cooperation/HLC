@@ -15,7 +15,6 @@ import { useMovieStore } from '@/stores/movie'
 import { useAccountStore } from '@/stores/account';
 import { ref, onMounted } from 'vue';
 import GenreCarousel from '@/components/movie/homecarousel/GenreCarousel.vue'
-import AlgorithmCarousel from '@/components/movie/homecarousel/AlgorithmCarousel.vue';
 import axios from 'axios';
 
 const movieStore = useMovieStore()
