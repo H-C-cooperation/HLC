@@ -1,6 +1,9 @@
 <template>
   <div v-if="movieStore.detailMovie" class="outer bg-black noto-sans-kr">
-    <div class="border-top border-bottom border-danger border-opacity-50 border-4 p-5 bg-dark rounded">
+    <div class="border-top border-bottom border-danger border-opacity-50 border-4 px-5 py-4 bg-dark rounded">
+      <div data-bs-theme="dark" class="text-end">
+        <button @click="goBack" class="btn-close fs-2 text-white mb-4" aria-label="Close"></button>
+      </div>
       <div class="cards videobox mb-3">
         <iframe v-if="movieStore.detailMovie.youtube_url" :src="movieStore.detailMovie.youtube_url" frameborder="0" width="100%" height="100%"></iframe>
       </div>
@@ -68,6 +71,9 @@ const isLiked = computed(() => {
   return false;
 });
 
+const goBack = () => {
+  window.history.back();
+}
 
 const toggleLike = async () => {
   try {
@@ -94,6 +100,7 @@ onMounted(() => {
   movieStore.takeMovieDetail(route.params.moviePk);
   movieStore.takeMovieDetailReview(route.params.moviePk);
   accountStore.getUserInfo();
+  window.scrollTo(0, 0);
 });
 
 onBeforeRouteLeave((to, from) => {

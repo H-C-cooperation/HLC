@@ -28,7 +28,7 @@
             <h5 class="card-title">영화 설명</h5>
             <p>(chatGPT로 생성됨)</p>
             <CarouselHover class="mb-3 p-1 border border-danger-subtle" :movie="movie"/>
-            <a @click="goDetail(movie.id)" class="btn bg-danger bg-opacity-75 text-white">자세히 보기</a>
+            <MovieDetailBtn :movie="movie"></MovieDetailBtn>
           </div>
         </div>
       </div>
@@ -56,6 +56,8 @@ import { useAccountStore } from '@/stores/account'
 import axios from 'axios'
 import 'vue3-carousel/dist/carousel.css'
 import CarouselHover from '@/components/movie/CarouselHover.vue'
+import MovieDetailBtn from '@/components/movie/MovieDetailBtn.vue'
+
 
 const movieStore = useMovieStore()
 const accountStore = useAccountStore()

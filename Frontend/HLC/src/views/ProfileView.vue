@@ -1,5 +1,5 @@
 <template>
-  <div class="outer bg-black" v-if="targetInfo">
+  <div class="outer bg-black" v-if="targetInfo  && !isLoading">
     <div class="outline">
       <header>
         <!-- 1. v-if 내프로필이라면 ( ) -->
@@ -55,11 +55,10 @@
           <div class="d-flex" style="height: 110px;">
             <!-- 위의 div 안에다가 바로 아래의 p(img, p 담고있음)가 반복되도록 만들기. followers의 img, username 반복되도록 ( ) -->
             <!-- img src, username 고쳐야함 -->
-
-            <p class="d-flex flex-column me-3 align-items-center" v-for="person in targetInfo.followers">
+            <div class="userimgname d-flex flex-column me-3 align-items-center" v-for="person in targetInfo.followers" @click="goProfile(person.id)">
               <img :src="person.image" alt="follower img" />
               <p class="fs-5">{{ person.username }}</p>
-            </p>
+            </div>
           </div>
 
           <br>
@@ -70,10 +69,10 @@
           <div class="d-flex" style="height: 130px;">
             <!-- 위의 div 안에다가 바로 아래의 p(img, p 담고있음)가 반복되도록 만들기. followings의 img, username 반복되도록 ( ) -->
             <!-- img src, username 고쳐야함 -->
-            <p class="d-flex flex-column me-3 align-items-center" v-for="person in targetInfo.followings">
-              <img :src="person.image" alt="following img" />
-              <p class="fs-5">{{ person.username }}</p>
-            </p>
+            <div class="userimgname d-flex flex-column me-3 align-items-center" v-for="person in targetInfo.followings" @click="goProfile(person.id)">
+                <img :src="person.image" alt="following img" />
+                <p class="fs-5">{{ person.username }}</p>
+            </div>
           </div>
 
           <br />
@@ -93,10 +92,11 @@
           <hr />
           <div class="d-flex">
           <!-- 위의 div태그 안에 아래의 p가 반복되도록. genre 여러개 나오도록 ( ) -->
-            <p class="fs-5 me-3" v-for="movie in targetInfo.like_movies">
+            <div class="fs-5 me-3 userMoviename" v-for="movie in targetInfo.like_movies" @click="movieStore.goToMovieDetail(movie.id)">
               <img :src="`https://image.tmdb.org/t/p/w200/${movie.poster_path}`" alt="movie img" style="width: 200px; height: 300px;"/>
               <p class="fs-5 text-center">{{ movie.title }}</p>
-            </p>
+            </div>
+         
           </div>
         </article>
       </main>
@@ -108,6 +108,7 @@
       </nav>
     </div>
   </div>
+  <div v-else class="loading">Loading...</div>
 </template>
 
 <script setup>
@@ -123,21 +124,20 @@ const route = useRoute()
 const router = useRouter()
 const targetInfo = ref([])
 const isMyProfile = ref(false)
-const staticUserName = accountStore.userInfo.username
+const staticUserName = ref('')
 
 // 이미지 업로드
 const image = ref(null);
 const imageUrl = computed(() => accountStore.userInfo.image);
+
+// 로딩
+const isLoading = ref(true);
 
 
 const isFollowing = computed(() => {
   const followers = targetInfo.value.followers || [];
   return followers.some(follower => follower.id === accountStore.userId);
 });
-
-const goSelect = () => {
-  router.push({name:'select'})
-}
 
 const onFileChange = (e) => {
   const file = e.target.files[0];
@@ -184,16 +184,23 @@ const saveProfile = async () => {
       }
     );
     console.log('Profile updated:', response.data);
-    window.location.reload()
+    
+    window.scrollTo(0, 0);  // 원하는 위치로 스크롤합니다. 예: top: 0, left: 0 => 페이지 맨 위로 스크롤
+    alert('정보가 저장되었습니다.')
+
+    // window.location.reload()
   } catch (error) {
     console.error('Error updating profile:', error);
   }
 };
 
-const cancelEdit = () => {
-  // 편집 취소 로직 (필요한 경우 추가)
-  window.location.reload()
-
+const cancelEdit = async () => {
+  try {
+    await getTargetUserInfo();
+    window.history.back();
+  } catch (error) {
+    console.error('Error fetching target user info:', error);
+  }
 };
 
 
@@ -230,11 +237,20 @@ const getTargetUserInfo = async () => {
       });
       targetInfo.value = response.data
       isMyProfile.value = accountStore.userId === response.data.id
+      staticUserName.value = response.data.username
     } catch (error) {
       console.error(error);
       throw error;
+  } finally {
+    isLoading.value = false; // 로딩 상태 해제
   }
 }
+
+// 프로필 클릭 시 넘어가기
+const goProfile = (userId) => {
+  router.push({ name: 'profile', params:{userPk:userId}})
+}
+
 
 onMounted(() => {
   accountStore.getUserInfo,
@@ -249,10 +265,17 @@ watch(
   () => route.params.userPk,
   (newUserPk, oldUserPk) => {
     if (newUserPk !== oldUserPk) {
+      isLoading.value = true; // 로딩 상태 설정
       getTargetUserInfo();
     }
   }
 );
+
+// setup 함수 내부에서 초기 데이터 로드
+(async () => {
+  accountStore.getUserInfo();
+  await getTargetUserInfo();
+})();
 
 </script>
 
@@ -299,5 +322,19 @@ img {
 
 button {
   width: 100px;
+}
+
+
+
+.userimgname:hover {
+  background-color: rgba(255, 255, 255, 0.1); /* 호버 시 배경색 변경 */
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); /* 그림자 효과 추가 */
+  cursor: pointer; /* 커서를 손가락 모양으로 변경하여 클릭 가능함을 강조 */
+}
+
+.userMoviename:hover {
+  background-color: rgba(255, 255, 255, 0.1); /* 호버 시 배경색 변경 */
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); /* 그림자 효과 추가 */
+  cursor: pointer; /* 커서를 손가락 모양으로 변경하여 클릭 가능함을 강조 */
 }
 </style>

@@ -191,7 +191,14 @@ export const useMovieStore = defineStore('movie', () => {
       const index = detailReviews.value.findIndex((review) => review.id === reviewId)
       detailReviews.value.splice(index, 1)
   }
+
+  // 영화 디테일 페이지로 이동
+  const goToMovieDetail = (moviePk) => {
+    router.push({ name: 'movieDetail', params: { moviePk } });
+  };
+
+
   
   return { movies, API_URL, getMovies, getMoviesByGenre, detailMovie, detailReviews, takeMovieDetail, takeMovieDetailReview, createOrUpdateReview, deleteReview, 
-    getMovieByAlgorithm, getMovieByRuntime }
+    getMovieByAlgorithm, getMovieByRuntime, goToMovieDetail }
 }, { persist: true })
