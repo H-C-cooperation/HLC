@@ -86,7 +86,8 @@
             </p>
           </div>
           <!-- v-if 본인 프로필이라면 edit 버튼 사용 ( ) -->
-          <button v-if="isMyProfile">EDIT</button><br><br><br>
+          <!-- <button v-if="isMyProfile" @click="goSelect">EDIT</button> -->
+          <br><br><br>
 
           <h3>{{ targetInfo.username }} 님이 찜한 영화</h3>
           <hr />
@@ -111,7 +112,7 @@
 
 <script setup>
 import { ref ,onMounted, watch, computed } from 'vue';
-import { useRoute, onBeforeRouteLeave } from 'vue-router';
+import { useRoute, onBeforeRouteLeave, useRouter } from 'vue-router';
 import { useMovieStore } from '@/stores/movie';
 import { useAccountStore } from '@/stores/account';
 import axios from 'axios';
@@ -119,6 +120,7 @@ import axios from 'axios';
 const movieStore = useMovieStore()
 const accountStore = useAccountStore()
 const route = useRoute()
+const router = useRouter()
 const targetInfo = ref([])
 const isMyProfile = ref(false)
 const staticUserName = accountStore.userInfo.username
@@ -132,6 +134,10 @@ const isFollowing = computed(() => {
   const followers = targetInfo.value.followers || [];
   return followers.some(follower => follower.id === accountStore.userId);
 });
+
+const goSelect = () => {
+  router.push({name:'select'})
+}
 
 const onFileChange = (e) => {
   const file = e.target.files[0];
@@ -167,6 +173,7 @@ const saveProfile = async () => {
   }
   try {
     const { username, email } = accountStore.userInfo;
+
     const response = await axios.put(
       `${accountStore.API_URL}/accounts/${accountStore.userInfo.id}/`,
       { username, email }, // 필요한 정보만 전송
