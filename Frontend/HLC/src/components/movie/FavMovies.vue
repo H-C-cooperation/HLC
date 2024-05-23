@@ -17,9 +17,9 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { useMovieStore } from '@/stores/movie'
+import { useAccountStore } from '@/stores/account';
 
-const store = useMovieStore()
+const store = useAccountStore()
 
 onMounted(() => {
   store.getUserInfo()

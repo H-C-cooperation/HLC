@@ -1,5 +1,5 @@
 <template>
-  <div class="main m-5">
+  <div v-if="genres.length > 0" class="main m-5">
     <HomeCarousel 
       v-for="genre in genres"
       :key="genre"
@@ -10,31 +10,34 @@
 
 <script setup>
 import { useMovieStore } from '@/stores/movie'
+import { useAccountStore } from '@/stores/account';
 import { ref, onMounted } from 'vue';
 import HomeCarousel from '@/components/movie/homecarousel/HomeCarousel.vue'
 import axios from 'axios';
 
-const store = useMovieStore()
+const movieStore = useMovieStore()
+const accountStore = useAccountStore()
+
 const genres = ref([])
 
 const getGenres = async function () {
+  genres.value.splice(0, genres.value.length)
   try {
     const res = await axios({
       method: 'get',
-      url: `${store.API_URL}/accounts/${store.userId}/`,
+      url: `${movieStore.API_URL}/accounts/${accountStore.userId}/`,
       headers: {
-        Authorization: `Token ${store.token}`
+        Authorization: `Token ${accountStore.token}`
       }
     })
     genres.value = res.data.like_genres.map(obj => obj.name)
-    console.log(genres.value)
   } catch (err) {
     console.log(err)
   }
 }
 
 onMounted(async () => {
-  await store.getUserInfo()
+  await accountStore.getUserInfo()
   await getGenres()
 })
 </script>

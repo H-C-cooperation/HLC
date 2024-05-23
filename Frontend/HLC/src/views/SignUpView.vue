@@ -28,13 +28,13 @@
 
 <script setup>
 import { ref } from 'vue';
-import { useMovieStore } from '@/stores/movie';
+import { useAccountStore } from '@/stores/account';
 
 const username = ref(null)
 const password1 = ref(null)
 const password2 = ref(null)
 
-const store = useMovieStore()
+const store = useAccountStore()
 
 const signUp = function () {
   const payload = {

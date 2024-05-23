@@ -51,11 +51,13 @@
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { Carousel, Navigation, Slide } from 'vue3-carousel'
 import { useMovieStore } from '@/stores/movie'
+import { useAccountStore } from '@/stores/account'
 import axios from 'axios'
 import 'vue3-carousel/dist/carousel.css'
 import CarouselHover from '@/components/movie/CarouselHover.vue'
 
-const store = useMovieStore()
+const movieStore = useMovieStore()
+const accountStore = useAccountStore()
 const movies = ref([])
 const items = ref(0)
 const activeMovie = ref(null)
@@ -63,9 +65,9 @@ const activeMovie = ref(null)
 const getMovies = function() {
   axios({
   method: 'get',
-  url: `${store.API_URL}/api/v1/movies/`,
+  url: `${movieStore.API_URL}/api/v1/movies/`,
   headers: {
-    Authorization: `Token ${store.token}`
+    Authorization: `Token ${accountStore.token}`
   },
   params: {
     mode: 'genre',

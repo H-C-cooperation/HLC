@@ -31,7 +31,7 @@
                 class="nav-link text-black"
                 :to="{ name: 'favorite' }"
               >찜</RouterLink>   
-              <span v-if="store.userInfo.like_movies" class="nav-link text-black">{{ store.userInfo.like_movies.length }}</span>
+              <span v-if="accountStore.userInfo.like_movies" class="nav-link text-black">{{ accountStore.userInfo.like_movies.length }}</span>
               <span v-else>0</span>
             </div>
           </li>
@@ -44,7 +44,7 @@
         </form>
         <RouterLink
           class="btn"
-          :to="{ name: 'profile', params:{userPk:store.userId}}"
+          :to="{ name: 'profile', params:{userPk:accountStore.userId}}"
         >
           <div class="dropdown">
             <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -65,34 +65,36 @@
 import { RouterLink, RouterView } from 'vue-router';
 import { useRouter } from 'vue-router';
 import { useMovieStore } from '@/stores/movie';
+import { useAccountStore } from '@/stores/account';
 import axios from 'axios';
 import { onMounted } from 'vue';
 
 const router = useRouter()
-const store = useMovieStore()
+const movieStore = useMovieStore()
+const accountStore = useAccountStore()
 
 const goProfile = function () {
-  router.push({ name: 'profile', params:{userPk:store.userId}})
+  router.push({ name: 'profile', params:{userPk:accountStore.userId}})
 }
 
 const logOut = function () {
   
   axios({
     method: 'post',
-    url: `${store.API_URL}/accounts/logout/`,
+    url: `${movieStore.API_URL}/accounts/logout/`,
     headers: {
-      Authorization: `Token ${store.token}`
+      Authorization: `Token ${accountStore.token}`
     }
   })
     .then(res => {
       router.push({ name: 'login' })
-      store.token = null
+      accountStore.token = null
     })
     .catch(err => console.log(err))
 }
 
 onMounted(() => {
-  store.getUserInfo()
+  accountStore.getUserInfo()
 })
 </script>
 

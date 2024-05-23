@@ -19,7 +19,9 @@
             @mouseleave="hideInfo(movie.id)"
           >
             <img class="carousel__item" :src="`https://image.tmdb.org/t/p/w200/${movie.poster_path}`" :alt="movie.title"/>
-            <h5 class="text-white m-5">{{ movie.title }}</h5>
+            <div class="text-field">
+              <h5 class="text-white my-5">{{ movie.title }}</h5>
+            </div>
             <div class="card-body">
               <div v-if="activeMovie === movie.id" class="info-popup">
                 <iframe 
@@ -173,6 +175,16 @@ onBeforeUnmount(() => {
   right: 0;
 }
 
+.text-field {
+  width: 100%;
+  height: 60px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
 .info-popup {
   position: absolute;
   top: 0;
@@ -203,4 +215,3 @@ onBeforeUnmount(() => {
   color: yellow;
 }
 </style>
-
