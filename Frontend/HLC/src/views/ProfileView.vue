@@ -103,7 +103,7 @@
 <script setup>
 import { ref ,onMounted } from 'vue';
 import { useRoute } from 'vue-router';
-import { useMovieStore } from '@/stores/movie';
+import { useAccountStore } from '@/stores/account';
 import axios from 'axios';
 
 onMounted(() => {
@@ -111,7 +111,7 @@ onMounted(() => {
   getTargetUserInfo()
 })
 
-const store = useMovieStore()
+const store = useAccountStore()
 const route = useRoute()
 const targetInfo = ref([])
 const isMyProfile = ref(false)

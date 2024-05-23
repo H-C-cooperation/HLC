@@ -28,12 +28,6 @@
                 :to="{ name: 'favorite' }"
               >Favorite</RouterLink>
             </p>
-            <p>
-              <RouterLink
-                class="text-reset"
-                :to="{ name: 'recommend' }"
-              >Recommendations</RouterLink>
-            </p>
           </div>
           <div md="3" lg="2" xl="2" class="mx-auto mb-4">
             <h6 class="text-uppercase fw-bold mb-4">Used Skills</h6>

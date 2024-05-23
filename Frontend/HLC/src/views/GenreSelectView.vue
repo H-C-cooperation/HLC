@@ -42,9 +42,12 @@ import axios from 'axios';
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useMovieStore } from '@/stores/movie';
+import { useAccountStore } from '@/stores/account';
 
 let selectedGenres = ref(new Set());
-const store = useMovieStore()
+const movieStore = useMovieStore()
+const accountStore = useAccountStore()
+
 const router = useRouter()
 
 // 클릭 이벤트를 처리하는 함수
@@ -86,8 +89,8 @@ const submitGenres = async () => {
   try {
     // 모든 장르에 대한 axios 요청을 보내는 Promise들의 배열
     const requests = selectedGenresArray.map(genre =>
-      axios.post(`${store.API_URL}/api/v1/genres/${genre}/like/`, null, {
-        headers: { Authorization: `Token ${store.token}` }
+      axios.post(`${movieStore.API_URL}/api/v1/genres/${genre}/like/`, null, {
+        headers: { Authorization: `Token ${accountStore.token}` }
       })
     );
 

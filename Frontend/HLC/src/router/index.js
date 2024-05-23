@@ -8,8 +8,6 @@ import FavoriteMovieView from '@/views/FavoriteMovieView.vue'
 // review
 import ReviewView from '@/components/review/Review.vue'
 import ReviewCreate from '@/components/review/ReviewCreate.vue'
-// recommend
-import Recommendation from '@/views/RecommendationView.vue'
 // account
 import ProfileView from '@/views/ProfileView.vue'
 import SignUpView from '@/views/SignUpView.vue'
@@ -62,11 +60,6 @@ const router = createRouter({
       component: ReviewCreate
     },
     {
-      path: '/recommendation',
-      name: 'recommend',
-      component: Recommendation
-    },
-    {
       path: '/profile/:userPk',
       name: 'profile',
       component: ProfileView,
@@ -87,7 +80,6 @@ router.beforeEach((to, from) => {
   } else {
     store.navFootView = false
   }
-
 })
 
 export default router

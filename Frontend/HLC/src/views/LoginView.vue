@@ -26,10 +26,10 @@
 
 <script setup>
 import { ref } from 'vue'
-import { useMovieStore } from '@/stores/movie';
+import { useAccountStore } from '@/stores/account';
 import { RouterLink } from 'vue-router';
 
-const store = useMovieStore()
+const accountStore = useAccountStore()
 const username = ref(null)
 const password = ref(null)
 
@@ -38,7 +38,7 @@ const logIn = function () {
     username: username.value,
     password: password.value
   }
-  store.logIn(payload)
+  accountStore.logIn(payload)
 }
 </script>
 
