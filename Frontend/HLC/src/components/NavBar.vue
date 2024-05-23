@@ -20,12 +20,6 @@
             >영화</RouterLink>
           </li>
           <li class="nav-item mx-1">
-            <RouterLink 
-              class="nav-link text-white"
-              :to="{ name: 'select' }"
-            >선택</RouterLink>
-          </li>
-          <li class="nav-item mx-1">
             <div class="favorites text-center d-flex justify-content-center align-items-center">
               <RouterLink 
                 class="nav-link text-black"

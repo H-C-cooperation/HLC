@@ -9,7 +9,7 @@
                 <img :src="`https://image.tmdb.org/t/p/w200/${movie.poster_path}`" height="300px">
               </div>
               <div v-else>
-                <img src="@/icons/No-Image.svg" alt="" class="object-fit-cover" width="200px" height="300px">
+                <img src="@/icons/No-Image.png" alt="" class="object-fit-cover" width="200px" height="300px">
               </div>
               <h5 class="mt-3">{{ movie.title }}</h5>
             </div>
@@ -128,8 +128,6 @@ h2 {
   0% {background-position: 0 0}
   0% {background-position: 100% -100%}
   }
-
-@import url('https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap');
 
 .do-hyeon-regular {
   font-family: "Do Hyeon", sans-serif;
