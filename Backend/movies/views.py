@@ -402,7 +402,7 @@ def review_like(request, review_pk):
 def genre_like(request, genre_name):
     user = request.user
     genre = get_object_or_404(Genre, name=genre_name)
-
+    
     if genre.like_users.filter(pk=user.pk).exists():
         genre.like_users.remove(user)
         liked = False
@@ -415,3 +415,15 @@ def genre_like(request, genre_name):
     }
 
     return Response(context)
+
+# 요청한 유저와 연결된 like_genres를 모두 제거
+@api_view(['DELETE'])
+def like_genres_delete(request):
+    if request.method == 'DELETE':
+        person = User.objects.get(pk = request.user.pk)
+
+        genres = person.like_genres.all()
+        for genre in genres:
+            person.like_genres.remove(genre)
+    
+        return Response({'message':'요청 유저의 like_genres 초기화'})
