@@ -82,6 +82,7 @@ const router = createRouter({
 router.beforeEach((to, from) => {
   const movieStore = useMovieStore()
   const accountStore = useAccountStore()
+  accountStore.getUserInfo()
 
   if (to.name !== 'login' && to.name !== 'signup' && to.name !== 'select') {
     movieStore.navFootView = true

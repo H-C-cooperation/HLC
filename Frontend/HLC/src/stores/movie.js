@@ -54,6 +54,43 @@ export const useMovieStore = defineStore('movie', () => {
     }
   };
 
+  // 알고리즘으로 영화 가져오기 (군집 알고리즘)
+  const getMovieByAlgorithm = function () {
+    axios({
+      method: 'get',
+      url: `${API_URL}/api/v1/movies/`,
+      params: {
+        mode: 'algorithm'
+      },
+      headers: {
+        Authorization: `Token ${accountStore.token}`,
+      }
+    })
+      .then(res => {
+        return res.data
+      })
+      .catch(err => console.log(err))
+  }
+
+  // 런타임으로 영화 가져오기
+  const getMovieByRuntime = function (runtime) {
+    axios({
+      method: 'get',
+      url: `${API_URL}/api/v1/movies/`,
+      params: {
+        mode: 'runtime',
+        inputRuntime: runtime
+      },
+      headers: {
+        Authorization: `Token ${accountStore.token}`,
+      }
+    })
+      .then(res => {
+        return res.data
+      })
+      .catch(err => console.log(err))
+  }
+
   // MovieDetail (영화 단일 조회)
   const takeMovieDetail = async function (movie_pk) {
     try {
@@ -155,5 +192,6 @@ export const useMovieStore = defineStore('movie', () => {
       detailReviews.value.splice(index, 1)
   }
   
-  return { movies, API_URL, getMovies, getMoviesByGenre, detailMovie, detailReviews, takeMovieDetail, takeMovieDetailReview, createOrUpdateReview, deleteReview }
+  return { movies, API_URL, getMovies, getMoviesByGenre, detailMovie, detailReviews, takeMovieDetail, takeMovieDetailReview, createOrUpdateReview, deleteReview, 
+    getMovieByAlgorithm, getMovieByRuntime }
 }, { persist: true })
