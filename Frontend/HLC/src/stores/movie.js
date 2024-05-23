@@ -9,6 +9,7 @@ export const useMovieStore = defineStore('movie', () => {
   const API_URL = 'http://127.0.0.1:8000'
   const router = useRouter()
   const accountStore = useAccountStore()
+  // 좋아하는 장르 리스트
 
   // Movie Detail 에서 사용
   const detailMovie = ref({})

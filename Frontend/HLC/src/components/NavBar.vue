@@ -36,8 +36,8 @@
             </div>
           </li>
         </ul>
-        <form class="d-flex" role="search">
-          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+        <form class="d-flex" role="search" @submit.prevent="search">
+          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" :value="inputText" @input="onInput">
           <button class="btn" type="submit">
             <img src="@/icons/search.png" alt="search" width="30" height="30">
           </button>
@@ -67,7 +67,7 @@ import { useRouter } from 'vue-router';
 import { useMovieStore } from '@/stores/movie';
 import { useAccountStore } from '@/stores/account';
 import axios from 'axios';
-import { onMounted } from 'vue';
+import { ref, onMounted } from 'vue';
 
 const router = useRouter()
 const movieStore = useMovieStore()
@@ -91,6 +91,18 @@ const logOut = function () {
       accountStore.token = null
     })
     .catch(err => console.log(err))
+}
+
+const inputText = ref('')
+const onInput = function (event) {
+  inputText.value = event.currentTarget.value
+}
+
+const search = function () {
+  const keyword = inputText.value
+  if (keyword) {
+    router.push({ name: 'search', params: { keyword } })
+  }
 }
 
 onMounted(() => {

@@ -18,28 +18,7 @@ import axios from 'axios';
 const movieStore = useMovieStore()
 const accountStore = useAccountStore()
 
-const genres = ref([])
-
-const getGenres = async function () {
-  genres.value.splice(0, genres.value.length)
-  try {
-    const res = await axios({
-      method: 'get',
-      url: `${movieStore.API_URL}/accounts/${accountStore.userId}/`,
-      headers: {
-        Authorization: `Token ${accountStore.token}`
-      }
-    })
-    genres.value = res.data.like_genres.map(obj => obj.name)
-  } catch (err) {
-    console.log(err)
-  }
-}
-
-onMounted(async () => {
-  await accountStore.getUserInfo()
-  await getGenres()
-})
+const genres = accountStore.favGenres
 </script>
 
 <style scoped>
