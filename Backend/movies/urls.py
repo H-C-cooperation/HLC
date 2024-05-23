@@ -25,5 +25,7 @@ urlpatterns = [
 
     # genre 좋아요
     path('genres/<str:genre_name>/like/', views.genre_like, name='genre_like'),
+
+    path('genres/like/delete/', views.like_genres_delete)
     
 ]
