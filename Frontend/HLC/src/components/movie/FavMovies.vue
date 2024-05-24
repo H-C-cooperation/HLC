@@ -6,7 +6,7 @@
           style="width: 10rem;"
           class="card bg-black"
         >
-          <button class="btn">
+          <button class="btn" @click="movieStore.goToMovieDetail(movie.id)">
             <img :src="`https://image.tmdb.org/t/p/w200/${movie.poster_path}`" :alt="movie.title" width="190px" height="270px"/>
           </button>
         </div>
@@ -18,8 +18,10 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useAccountStore } from '@/stores/account';
+import { useMovieStore } from '@/stores/movie';
 
 const store = useAccountStore()
+const movieStore = useMovieStore()
 
 onMounted(() => {
   store.getUserInfo()
